@@ -1,0 +1,195 @@
+<h2 class="text-2xl font-bold mb-6 text-gray-800 flex items-center gap-2">
+  <span class="text-blue-600">📈</span>
+  Stock Market Dashboard
+</h2>
+
+<div class="flex flex-col lg:flex-row gap-8">
+  <!-- Left: Stock Table (75%) -->
+  <div class="flex-1 lg:max-w-4xl">
+    <!-- Your existing table -->
+    @if (!stockService.stocks().length) {
+    <!-- Loading state -->
+    <div class="flex flex-col justify-center items-center py-12 space-y-4">
+      <div
+        class="animate-spin h-8 w-8 border-4 border-blue-500 border-t-transparent rounded-full"
+      ></div>
+      <p class="text-gray-500 italic">Fetching latest market data...</p>
+    </div>
+    } @else {
+    <div
+      class="overflow-x-auto rounded-xl shadow-lg border border-gray-200 bg-white"
+    >
+      <table class="w-full border-collapse text-gray-900 dark:text-gray-100">
+        <!-- Table content (unchanged) -->
+        <thead
+          class="bg-gradient-to-r from-slate-50 to-gray-50 text-gray-800 uppercase text-sm font-semibold tracking-wide"
+        >
+          <tr>
+            <th class="py-4 px-6 text-left rounded-tl-lg">Symbol</th>
+            <th class="py-4 px-6 text-left">Company</th>
+            <th class="py-4 px-6 text-right">Price</th>
+            <th class="py-4 px-6 text-right">Change</th>
+            <th class="py-4 px-6 text-center rounded-tr-lg">Watchlist</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (stock of stockService.stocks(); track stock.symbol) {
+          <tr
+            class="hover:bg-blue-50 transition-all duration-150 border-b border-gray-100 last:border-b-0"
+          >
+            <td class="py-4 px-6 font-semibold text-gray-900">
+              <span
+                class="text-sm bg-gray-100 text-gray-700 px-2 py-1 rounded-full font-mono"
+              >
+                {{ stock.symbol }}
+              </span>
+            </td>
+            <td class="py-4 px-6 text-gray-700 max-w-xs">
+              <span class="truncate block" title="{{ stock.name }}">{{
+                stock.name
+              }}</span>
+            </td>
+            <td class="py-4 px-6 font-mono text-right tabular-nums">
+              ${{
+                stock.price.toLocaleString("en-US", {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2
+                })
+              }}
+            </td>
+            <td
+              [class.text-green-700]="stock.change >= 0"
+              [class.text-red-700]="stock.change < 0"
+              class="py-4 px-6 text-right font-medium tabular-nums"
+            >
+              <div class="flex items-center justify-end gap-1">
+                @if (stock.change >= 0) {
+                <svg
+                  class="h-4 w-4 text-green-600 inline"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L10 6.414 6.707 9.707a1 1 0 01-1.414 0z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+                } @else {
+                <svg
+                  class="h-4 w-4 text-red-600 inline"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M14.707 10.293a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L10 13.586l3.293-3.293a1 1 0 011.414 0z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+                }
+                <span
+                  >{{ stock.change >= 0 ? "+" : ""
+                  }}{{ stock.change.toFixed(2) }}%</span
+                >
+              </div>
+            </td>
+            <td class="py-4 px-6 text-center">
+              <button
+                (click)="stockService.toggleFavorite(stock.symbol)"
+                class="relative w-9 h-9 flex items-center justify-center text-xl transition-all duration-150 hover:scale-125 focus:outline-none focus:ring-2 focus:ring-yellow-300 rounded-full"
+                [class.text-yellow-500]="
+                  stockService.favorites().includes(stock.symbol)
+                "
+                [class.text-gray-300]="
+                  !stockService.favorites().includes(stock.symbol)
+                "
+              >
+                <span
+                  class="absolute inset-0 scale-0 bg-yellow-100 rounded-full opacity-75 animate-ping"
+                  [class.scale-100]="wasRecentlyToggled === stock.symbol"
+                ></span>
+                {{
+                  stockService.favorites().includes(stock.symbol) ? "★" : "☆"
+                }}
+              </button>
+            </td>
+          </tr>
+          } @empty {
+          <tr>
+            <td colspan="5" class="py-8 text-center text-gray-500">
+              <div class="flex flex-col items-center gap-2 text-sm">
+                <i class="fas fa-chart-line text-3xl opacity-30"></i>
+                <p>No stocks match your criteria.</p>
+              </div>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    }
+  </div>
+
+  <!-- Right: New Section (Sidebar) -->
+  <div class="lg:w-80 flex-shrink-0">
+    <div
+      class="bg-white p-6 rounded-xl shadow-lg border border-gray-200 sticky top-12"
+    >
+      <h3 class="text-lg font-semibold text-gray-800 mb-4">
+        📊 Market Summary
+      </h3>
+
+      <div class="space-y-4">
+        <div class="flex justify-between">
+          <span class="text-gray-600">Total Stocks</span>
+          <span class="font-medium">{{ stockService.stocks().length }}</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-gray-600">Favorites</span>
+          <span class="font-medium text-yellow-600">{{
+            stockService.favorites().length
+          }}</span>
+        </div>
+        <div class="border-t pt-3">
+          <h4 class="text-sm font-medium text-gray-700 mb-2">Top Gainer</h4>
+          @if (topGainer(); as gainer) {
+          <div class="text-sm">
+            <span class="font-mono">{{ gainer.symbol }}</span>
+            <span class="ml-1 text-green-600"
+              >+{{ gainer.change.toFixed(2) }}%</span
+            >
+          </div>
+          } @else {
+          <span class="text-gray-400">—</span>
+          }
+        </div>
+        <div class="border-t pt-3">
+          <h4 class="text-sm font-medium text-gray-700 mb-2">Top Loser</h4>
+          @if (topLoser(); as loser) {
+          <div class="text-sm">
+            <span class="font-mono">{{ loser.symbol }}</span>
+            <span class="ml-1 text-red-600"
+              >{{ loser.change.toFixed(2) }}%</span
+            >
+          </div>
+          } @else {
+          <span class="text-gray-400">—</span>
+          }
+        </div>
+      </div>
+
+      <!-- Example Chart Placeholder -->
+      <div class="mt-6 p-4 bg-gray-50 rounded-lg text-center">
+        <p class="text-gray-500 text-sm">📈 Chart Preview</p>
+        <img
+          src="https://via.placeholder.com/300x150/f0f9ff/1e40af?text=Market+Trend"
+          alt="Market trend chart"
+          class="w-full rounded mt-2"
+        />
+      </div>
+    </div>
+  </div>
+</div>
