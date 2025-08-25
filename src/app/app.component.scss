@@ -419,3 +419,11 @@ $shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
   padding-top: 94px;
   position: relative;
 }
+.container {
+  max-width: 1200px;
+  margin: auto;
+  padding-top: 2rem; /* optional spacing */
+}
+.padding-top {
+  padding: 2rem 0;
+}

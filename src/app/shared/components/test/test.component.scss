@@ -1,0 +1,48 @@
+.mar-top {
+  margin-top: 60px;
+}
+.learning-demo {
+  font-family: Arial, sans-serif;
+  margin: 1rem;
+  line-height: 1.6;
+
+  h1 {
+    color: #2c3e50;
+  }
+
+  section {
+    margin-bottom: 2rem;
+    padding: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+
+    h2 {
+      margin-bottom: 0.5rem;
+      color: #34495e;
+    }
+
+    button {
+      margin-right: 0.5rem;
+      padding: 0.5rem 1rem;
+      border: none;
+      background: #3498db;
+      color: white;
+      border-radius: 4px;
+      cursor: pointer;
+
+      &:hover {
+        background: #2980b9;
+      }
+    }
+
+    ul {
+      padding-left: 1rem;
+    }
+
+    .hint {
+      font-size: 0.85rem;
+      color: #7f8c8d;
+      margin-top: 0.5rem;
+    }
+  }
+}

@@ -46,8 +46,11 @@ export class NavbarComponent implements OnInit, OnDestroy {
   // Navigation items
   navItems = signal<NavItem[]>([
     { label: 'Home', path: '/' },
+    { label: 'Stock', path: '/stock' },
+
     { label: 'About', path: '/about' },
     { label: 'Services', path: '/services' },
+    { label: 'Test', path: '/test' },
     { label: 'Contact', path: '/contact' },
   ]);
 
