@@ -18,8 +18,66 @@
 
     <!-- Desktop Links & Auth (shown on medium+ screens) -->
     <!-- Desktop Links -->
-    <div class="hidden md:flex items-center space-x-8">
-      @for (item of navItems(); track item.path) {
+    <!-- Desktop Nav -->
+    <div class="hidden md:flex items-center space-x-8 relative">
+      @for (item of navItems(); track item.path) { @if (item.isMegaMenu) {
+      <!-- Services with Mega Menu -->
+      <div class="relative" (click)="toggleMegaMenu(true)">
+        <a
+          [routerLink]="item.path"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+          class="text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200 flex items-center gap-1"
+          (click)="toggleMegaMenu(!isMegaMenuOpen())"
+        >
+          {{ item.label }}
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-4 w-4"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+              clip-rule="evenodd"
+            />
+          </svg>
+        </a>
+
+        <!-- Mega Menu Dropdown -->
+        <div
+          *ngIf="isMegaMenuOpen()"
+          id="mega-menu-full-dropdown"
+          class="absolute left-0 mt-2 w-screen max-w-4xl px-4 py-5 mx-auto bg-white border-y border-gray-200 shadow-lg dark:bg-gray-800 dark:border-gray-600 rounded-lg"
+          (mouseenter)="toggleMegaMenu(true)"
+          (mouseleave)="toggleMegaMenu(false)"
+        >
+          <div class="grid max-w-screen-xl grid-cols-1 sm:grid-cols-2 md:px-6">
+            @for (column of megaMenuContent; track column.title) {
+            <ul class="p-2">
+              <li class="font-semibold text-gray-800 dark:text-gray-100 mb-2">
+                {{ column.title }}
+              </li>
+              @for (link of column.links; track link.path) {
+              <li>
+                <a
+                  [routerLink]="link.path"
+                  (click)="closeMenu()"
+                  class="block p-3 rounded-lg text-sm text-gray-600 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-700"
+                >
+                  <div class="font-medium">{{ link.label }}</div>
+                  <div class="text-gray-500 dark:text-gray-400">Learn more</div>
+                </a>
+              </li>
+              }
+            </ul>
+            }
+          </div>
+        </div>
+      </div>
+      } @else {
+      <!-- Regular Link -->
       <a
         [routerLink]="item.path"
         routerLinkActive="active"
@@ -29,8 +87,9 @@
       >
         {{ item.label }}
       </a>
-      }
+      } }
 
+      <!-- Auth Buttons -->
       <button
         class="px-4 py-2 border border-gray-400 text-gray-700 rounded hover:bg-gray-100"
       >
@@ -57,20 +116,20 @@
   </div>
 
   <!-- Stock Ticker (Optional) -->
-  <div class="bg-gray-800 text-xs text-gray-300 py-1 overflow-hidden">
+  <!-- <div class="bg-gray-800 text-xs text-gray-300 py-1 overflow-hidden">
     <div class="inline-flex animate-infinite-scroll">
       @for (stock of stocks(); track stock.symbol) {
       <span class="mx-6 flex items-center">
         <span>{{ stock.symbol }}</span>
         <span>${{ stock.price.toFixed(2) }}</span>
         <span [class]="getChangeClass(stock.change)"
-          >{{ getChangeIcon(stock.change) }}
+          >{{ (stock.change) }}
           {{ absoluteValue(stock.change).toFixed(2) }}</span
         >
       </span>
       }
     </div>
-  </div>
+  </div> -->
 
   <!-- Mobile Menu Overlay -->
   <div

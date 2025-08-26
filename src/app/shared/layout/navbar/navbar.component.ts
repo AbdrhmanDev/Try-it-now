@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import { Component, computed, signal, OnInit, OnDestroy } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 
@@ -12,13 +13,14 @@ export interface Stock {
 interface NavItem {
   label: string;
   path: string;
+  isMegaMenu?: boolean;
 }
 
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.scss'],
-  imports: [RouterLink, RouterLinkActive], // Standalone: add imports
+  imports: [RouterLink, RouterLinkActive, CommonModule], // Standalone: add imports
   standalone: true, // Required for standalone component
 })
 export class NavbarComponent implements OnInit, OnDestroy {
@@ -45,17 +47,65 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   // Navigation items
   navItems = signal<NavItem[]>([
-    { label: 'Home', path: '/' },
+    { label: 'Home', path: '/', isMegaMenu: false },
     { label: 'Stock', path: '/stock' },
-
     { label: 'About', path: '/about' },
-    { label: 'Services', path: '/services' },
+    {
+      label: 'Services',
+      path: '/services',
+      isMegaMenu: true, // ← This will trigger the mega dropdown
+    },
     { label: 'Test', path: '/test' },
     { label: 'Contact', path: '/contact' },
+    { label: 'Change Detection', path: '/change-detection' },
   ]);
 
-  private updateSubscription: any;
+  megaMenuContent = [
+    {
+      title: 'Fundamentals',
+      links: [
+        { label: 'Getting Started', path: '/angular/getting-started' },
+        { label: 'Components & Templates', path: '/angular/components' },
+        { label: 'Directives & Pipes', path: '/angular/directives-pipes' },
+        {
+          label: 'Dependency Injection',
+          path: '/angular/dependency-injection',
+        },
+      ],
+    },
+    {
+      title: 'Advanced Topics',
+      links: [
+        { label: 'Change Detection', path: '/angular/change-detection' },
+        { label: 'Standalone Components', path: '/angular/standalone' },
+        { label: 'Signals & Reactivity', path: '/angular/signals' },
+        { label: 'RxJS & Observables', path: '/angular/rxjs' },
+        { label: 'Forms (Reactive & Template-driven)', path: '/angular/forms' },
+      ],
+    },
+    {
+      title: 'Architecture & State Management',
+      links: [
+        { label: 'Routing & Lazy Loading', path: '/angular/routing' },
+        { label: 'NgRx / Signals Store', path: '/angular/state-management' },
+        { label: 'Services & Providers', path: '/angular/services' },
+        { label: 'Clean Architecture', path: '/angular/architecture' },
+      ],
+    },
+    {
+      title: 'Performance & Tools',
+      links: [
+        { label: 'OnPush Strategy', path: '/angular/onpush' },
+        { label: 'Standalone API', path: '/angular/standalone-api' },
+        { label: 'Angular CLI & Schematics', path: '/angular/cli' },
+        { label: 'Testing (Jest/Karma)', path: '/angular/testing' },
+      ],
+    },
+  ];
 
+  private updateSubscription: any;
+  isMegaMenuOpen = signal(false);
+  private closeTimeout: any;
   ngOnInit() {
     // Simulate scroll
     window.addEventListener('scroll', () => {
@@ -68,20 +118,25 @@ export class NavbarComponent implements OnInit, OnDestroy {
     }, 3000);
   }
 
+  toggleMegaMenu(open: boolean) {
+    this.isMegaMenuOpen.set(open);
+    console.log(this.isMegaMenuOpen);
+  }
   ngOnDestroy() {
     if (this.updateSubscription) {
       clearInterval(this.updateSubscription);
     }
     window.removeEventListener('scroll', () => {});
   }
-
+  openMegaMenu() {
+    if (this.closeTimeout) {
+      clearTimeout(this.closeTimeout);
+    }
+    this.isMegaMenuOpen.set(true);
+  }
   // Menu controls
   toggleMenu() {
     this.isMenuOpen.update((value) => !value);
-  }
-
-  closeMenu() {
-    this.isMenuOpen.set(false);
   }
 
   isActive(path: string): boolean {
@@ -109,15 +164,13 @@ export class NavbarComponent implements OnInit, OnDestroy {
     });
     this.stocksSignal.set(updated);
   }
-
-  getChangeClass(change: number): string {
-    return change >= 0 ? 'text-green-600' : 'text-red-600';
+  closeMenu() {
+    this.isMenuOpen.set(false);
+    this.isMegaMenuOpen.set(false);
   }
-
-  getChangeIcon(change: number): string {
-    return change >= 0 ? '↗' : '↘';
-  }
-  absoluteValue(value: number): number {
-    return Math.abs(value);
+  closeMegaMenu() {
+    this.closeTimeout = setTimeout(() => {
+      this.isMegaMenuOpen.set(false);
+    }, 200); // 200ms delay
   }
 }

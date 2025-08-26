@@ -1,0 +1,522 @@
+<div class="flex min-h-screen bg-background padding-top">
+  <!-- Updated to use light background and flex layout similar to reference -->
+  <!-- Sidebar Navigation -->
+  <nav class="w-64 bg-sidebar border-r border-sidebar-border p-6">
+    <div class="mb-8">
+      <h1 class="text-2xl font-bold text-primary mb-2">Angular Signals</h1>
+      <p class="text-sm text-muted-foreground">Reactive Programming Learning</p>
+    </div>
+
+    <ul class="space-y-2">
+      @for (section of sections(); track section.id; let i = $index) {
+      <li>
+        <button
+          (click)="goToSection(i)"
+          [class]="
+            'w-full text-left px-4 py-3 rounded-lg transition-colors flex items-center gap-3 ' +
+            (currentSection() === i
+              ? 'bg-sidebar-primary text-sidebar-primary-foreground'
+              : 'hover:bg-sidebar-primary/50')
+          "
+        >
+          <span class="text-lg">{{ i + 1 }}</span>
+          <span class="font-medium">{{ section.title }}</span>
+          @if (completedSections().includes(i)) {
+          <span class="text-green-500 ml-auto">✓</span>
+          }
+        </button>
+      </li>
+      }
+    </ul>
+
+    <!-- Added progress indicator -->
+    <div class="mt-8 p-4 bg-surface rounded-lg">
+      <div class="text-sm text-muted-foreground mb-2">Progress</div>
+      <div class="w-full bg-border rounded-full h-2">
+        <div
+          class="bg-primary h-2 rounded-full transition-all duration-300"
+          [style.width.%]="progress()"
+        ></div>
+      </div>
+      <div class="text-xs text-muted-foreground mt-1">
+        {{ progress() }}% Complete
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="flex-1 p-8">
+    <!-- Section 0: Introduction -->
+    @if (currentSection() === 0) {
+    <div class="max-w-4xl">
+      <div class="mb-8">
+        <h1 class="text-4xl font-bold text-foreground mb-4">Angular Signals</h1>
+        <p class="text-xl text-muted-foreground">
+          Learn reactive programming with interactive examples
+        </p>
+      </div>
+
+      <!-- Converted to smaller learning cards -->
+      <div class="grid md:grid-cols-2 gap-6 mb-8">
+        <div class="learning-card">
+          <h3 class="text-xl font-semibold mb-3 text-foreground">
+            What are Signals?
+          </h3>
+          <p class="text-muted-foreground mb-4">
+            Angular Signals are reactive primitives that provide fine-grained
+            reactivity for better performance and simpler mental models.
+          </p>
+          <div class="performance-indicator performance-fast">
+            <span>⚡</span>
+            <span>Reactive & Fast</span>
+          </div>
+        </div>
+
+        <div class="learning-card">
+          <h3 class="text-xl font-semibold mb-3 text-foreground">
+            Key Benefits
+          </h3>
+          <ul class="text-sm text-muted-foreground space-y-1">
+            <li class="flex items-start gap-2">
+              <span class="text-primary">•</span>
+              <span>Fine-grained reactivity</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-primary">•</span>
+              <span>Better performance</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-primary">•</span>
+              <span>Automatic dependency tracking</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="learning-card">
+        <h3 class="text-xl font-semibold mb-4 text-foreground">Signal Types</h3>
+        <div class="grid md:grid-cols-3 gap-4">
+          <div class="p-4 border border-border rounded-lg">
+            <div class="strategy-badge mb-2">Basic</div>
+            <h4 class="font-semibold mb-2">signal()</h4>
+            <p class="text-sm text-muted-foreground">
+              Writable reactive values
+            </p>
+          </div>
+          <div class="p-4 border border-border rounded-lg">
+            <div class="strategy-badge mb-2">Computed</div>
+            <h4 class="font-semibold mb-2">computed()</h4>
+            <p class="text-sm text-muted-foreground">Derived reactive values</p>
+          </div>
+          <div class="p-4 border border-border rounded-lg">
+            <div class="strategy-badge mb-2">Effect</div>
+            <h4 class="font-semibold mb-2">effect()</h4>
+            <p class="text-sm text-muted-foreground">
+              Side effects from signals
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    }
+
+    <!-- Section 1: Basic Usage -->
+    @if (currentSection() === 1) {
+    <div class="max-w-4xl">
+      <div class="mb-8">
+        <h1 class="text-3xl font-bold text-foreground mb-4">
+          Basic Signal Usage
+        </h1>
+        <p class="text-lg text-muted-foreground">
+          Learn how to create and use basic signals
+        </p>
+      </div>
+
+      <div class="grid lg:grid-cols-2 gap-8">
+        <div class="learning-card">
+          <h3 class="text-xl font-semibold mb-4 text-foreground">
+            Interactive Counter
+          </h3>
+          <div class="text-center mb-4">
+            <div class="text-4xl font-bold text-primary mb-2">
+              {{ counter() }}
+            </div>
+            <div class="text-sm text-muted-foreground">Current Value</div>
+          </div>
+          <div class="flex justify-center gap-2">
+            <button
+              class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+              (click)="decrementCounter()"
+            >
+              -
+            </button>
+            <button
+              class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors"
+              (click)="resetCounter()"
+            >
+              Reset
+            </button>
+            <button
+              class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
+              (click)="incrementCounter()"
+            >
+              +
+            </button>
+          </div>
+        </div>
+
+        <div class="learning-card">
+          <h3 class="text-xl font-semibold mb-4 text-foreground">
+            How It Works
+          </h3>
+          <ul class="space-y-2 text-muted-foreground">
+            <li class="flex items-start gap-2">
+              <span class="text-primary">1.</span>
+              <span
+                ><code class="code-inline">signal(0)</code> creates a
+                signal</span
+              >
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-primary">2.</span>
+              <span
+                ><code class="code-inline">counter()</code> reads the
+                value</span
+              >
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-primary">3.</span>
+              <span
+                ><code class="code-inline">counter.set(5)</code> sets new
+                value</span
+              >
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-primary">4.</span>
+              <span
+                ><code class="code-inline">counter.update(n => n + 1)</code>
+                updates</span
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    }
+
+    <!-- Section 2: Computed Signals -->
+    @if (currentSection() === 2) {
+    <div class="max-w-4xl">
+      <div class="mb-8">
+        <h1 class="text-3xl font-bold text-foreground mb-4">
+          Computed Signals
+        </h1>
+        <p class="text-lg text-muted-foreground">
+          Reactive computations that update automatically
+        </p>
+      </div>
+
+      <div class="grid lg:grid-cols-2 gap-8">
+        <div class="learning-card">
+          <h3 class="text-xl font-semibold mb-4 text-foreground">Live Demo</h3>
+          <div class="space-y-4">
+            <div
+              class="flex items-center justify-between p-3 bg-surface rounded-lg"
+            >
+              <span>Counter: {{ counter() }}</span>
+              <div class="flex gap-2">
+                <button
+                  class="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
+                  (click)="decrementCounter()"
+                >
+                  -
+                </button>
+                <button
+                  class="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600 transition-colors"
+                  (click)="incrementCounter()"
+                >
+                  +
+                </button>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <div class="p-3 bg-surface rounded-lg text-center">
+                <div class="text-lg font-semibold text-primary">
+                  {{ doubleCounter() }}
+                </div>
+                <div class="text-xs text-muted-foreground">Doubled</div>
+              </div>
+              <div class="p-3 bg-surface rounded-lg text-center">
+                <div class="text-lg font-semibold text-primary">
+                  {{ itemCount() }}
+                </div>
+                <div class="text-xs text-muted-foreground">Items</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="learning-card">
+          <h3 class="text-xl font-semibold mb-4 text-foreground">
+            Key Features
+          </h3>
+          <ul class="space-y-2 text-muted-foreground">
+            <li class="flex items-start gap-2">
+              <span class="text-primary">✓</span>
+              <span>Automatically recalculate when dependencies change</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-primary">✓</span>
+              <span>Cached until dependencies change (memoized)</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-primary">✓</span>
+              <span>Can depend on multiple signals</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-primary">✓</span>
+              <span>Read-only by design</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    }
+
+    <!-- Section 3: Effects -->
+    @if (currentSection() === 3) {
+    <div class="max-w-4xl">
+      <div class="mb-8">
+        <h1 class="text-3xl font-bold text-foreground mb-4">
+          Effects and Side Effects
+        </h1>
+        <p class="text-lg text-muted-foreground">
+          Run side effects when signals change
+        </p>
+      </div>
+
+      <div class="grid lg:grid-cols-2 gap-8">
+        <div class="learning-card">
+          <h3 class="text-xl font-semibold mb-4 text-foreground">
+            Name Updater
+          </h3>
+          <div class="space-y-4">
+            <div class="p-4 bg-surface rounded-lg text-center">
+              <h4 class="text-xl font-semibold text-primary">
+                {{ greeting() }}
+              </h4>
+            </div>
+
+            <div class="flex gap-2">
+              <input
+                type="text"
+                [value]="newName()"
+                (input)="newName.set($any($event.target).value)"
+                placeholder="Enter new name"
+                class="flex-1 px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+              />
+              <button
+                (click)="updateName()"
+                class="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
+              >
+                Update
+              </button>
+            </div>
+
+            <div class="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+              <p class="text-sm text-blue-800">
+                <strong>Effects in action:</strong> Check the browser console to
+                see effects logging changes!
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="learning-card">
+          <h3 class="text-xl font-semibold mb-4 text-foreground">
+            Effect Use Cases
+          </h3>
+          <ul class="space-y-2 text-muted-foreground">
+            <li class="flex items-start gap-2">
+              <span class="text-primary">📝</span>
+              <span>Logging and debugging</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-primary">🌐</span>
+              <span>API calls and data fetching</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-primary">💾</span>
+              <span>LocalStorage synchronization</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-primary">📊</span>
+              <span>Analytics and tracking</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-primary">🎨</span>
+              <span>DOM manipulation</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    }
+
+    <!-- Section 4: Stock Dashboard Example -->
+    @if (currentSection() === 4) {
+    <div class="max-w-6xl">
+      <div class="mb-8">
+        <h1 class="text-3xl font-bold text-foreground mb-4">
+          Real-World Example: Stock Dashboard
+        </h1>
+        <p class="text-lg text-muted-foreground">
+          See signals in action with a reactive stock dashboard
+        </p>
+      </div>
+
+      <!-- Converted stock demo to smaller cards -->
+      <div class="grid md:grid-cols-4 gap-4 mb-6">
+        <div class="learning-card text-center">
+          <div class="text-2xl font-bold text-primary">
+            {{ stocksSignal().length }}
+          </div>
+          <div class="text-sm text-muted-foreground">Total Stocks</div>
+        </div>
+        <div class="learning-card text-center">
+          <div class="text-2xl font-bold text-yellow-600">
+            {{ favoritesSignal().length }}
+          </div>
+          <div class="text-sm text-muted-foreground">Favorites</div>
+        </div>
+        <div class="learning-card text-center">
+          @if (topGainer(); as gainer) {
+          <div class="text-lg font-bold text-green-600">
+            {{ gainer.symbol }}
+          </div>
+          <div class="text-sm text-muted-foreground">Top Gainer</div>
+          } @else {
+          <div class="text-lg font-bold text-muted-foreground">—</div>
+          <div class="text-sm text-muted-foreground">Top Gainer</div>
+          }
+        </div>
+        <div class="learning-card text-center">
+          @if (topLoser(); as loser) {
+          <div class="text-lg font-bold text-red-600">{{ loser.symbol }}</div>
+          <div class="text-sm text-muted-foreground">Top Loser</div>
+          } @else {
+          <div class="text-lg font-bold text-muted-foreground">—</div>
+          <div class="text-sm text-muted-foreground">Top Loser</div>
+          }
+        </div>
+      </div>
+
+      <div class="learning-card">
+        <h3 class="text-xl font-semibold mb-4 text-foreground">Stock List</h3>
+        <div class="overflow-x-auto">
+          <table class="w-full">
+            <thead>
+              <tr class="border-b border-border">
+                <th class="text-left py-3 px-4 font-semibold">Symbol</th>
+                <th class="text-left py-3 px-4 font-semibold">Company</th>
+                <th class="text-left py-3 px-4 font-semibold">Price</th>
+                <th class="text-left py-3 px-4 font-semibold">Change</th>
+                <th class="text-left py-3 px-4 font-semibold">Favorite</th>
+                <th class="text-left py-3 px-4 font-semibold">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (stock of stocksSignal(); track stock.symbol) {
+              <tr class="border-b border-border">
+                <td class="py-3 px-4 font-mono font-semibold">
+                  {{ stock.symbol }}
+                </td>
+                <td class="py-3 px-4">{{ stock.name }}</td>
+                <td class="py-3 px-4 font-mono">
+                  ${{ stock.price.toFixed(2) }}
+                </td>
+                <td
+                  class="py-3 px-4 font-mono"
+                  [class]="
+                    stock.change >= 0 ? 'text-green-600' : 'text-red-600'
+                  "
+                >
+                  {{ stock.change >= 0 ? "+" : ""
+                  }}{{ stock.change.toFixed(2) }}%
+                </td>
+                <td class="py-3 px-4">
+                  <button
+                    (click)="toggleFavorite(stock.symbol)"
+                    [class]="
+                      favoritesSignal().includes(stock.symbol)
+                        ? 'text-yellow-500'
+                        : 'text-gray-400'
+                    "
+                    class="hover:scale-110 transition-transform"
+                  >
+                    {{ favoritesSignal().includes(stock.symbol) ? "★" : "☆" }}
+                  </button>
+                </td>
+                <td class="py-3 px-4">
+                  <button
+                    class="px-3 py-1 bg-primary text-primary-foreground rounded hover:bg-primary/90 transition-colors text-sm"
+                    (click)="updateStockPrice(stock.symbol)"
+                  >
+                    Update
+                  </button>
+                </td>
+              </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      @if (favoriteStocks().length > 0) {
+      <div class="learning-card">
+        <h3 class="text-xl font-semibold mb-4 text-foreground">
+          Your Favorite Stocks
+        </h3>
+        <div class="grid md:grid-cols-3 gap-4">
+          @for (stock of favoriteStocks(); track stock.symbol) {
+          <div class="p-4 border border-border rounded-lg">
+            <div class="font-mono font-semibold">{{ stock.symbol }}</div>
+            <div class="text-sm text-muted-foreground">{{ stock.name }}</div>
+            <div class="flex justify-between items-center mt-2">
+              <span class="font-mono">${{ stock.price.toFixed(2) }}</span>
+              <span
+                [class]="stock.change >= 0 ? 'text-green-600' : 'text-red-600'"
+                class="font-mono text-sm"
+              >
+                {{ stock.change >= 0 ? "+" : "" }}{{ stock.change.toFixed(2) }}%
+              </span>
+            </div>
+          </div>
+          }
+        </div>
+      </div>
+      }
+    </div>
+    }
+
+    <!-- Navigation -->
+    <div class="flex justify-between mt-8 pt-6 border-t border-border">
+      <button
+        class="px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        (click)="previousSection()"
+        [disabled]="currentSection() === 0"
+      >
+        ← Previous
+      </button>
+
+      <button
+        class="px-6 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        (click)="nextSection()"
+        [disabled]="currentSection() === sections().length - 1"
+      >
+        Next →
+      </button>
+    </div>
+  </main>
+</div>

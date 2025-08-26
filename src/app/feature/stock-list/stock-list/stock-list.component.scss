@@ -357,17 +357,20 @@ button {
 //     background: linear-gradient(135deg, #374151 0%, #4b5563 100%) !important;
 //   }
 // }
-.container {
-  max-width: 1200px;
-  margin: auto;
-  padding: 2rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
+// .container {
+//   max-width: 1200px;
+//   margin: auto;
+//   padding: 2rem;
+//   display: flex;
+//   align-items: center;
+//   justify-content: space-between;
+// }
 .sticky-on {
   top: 100px;
 }
 .stocks-container {
-  padding: 3rem 0;
+  padding: 4rem 0;
+}
+padding-top {
+  padding-top: 3rem;
 }

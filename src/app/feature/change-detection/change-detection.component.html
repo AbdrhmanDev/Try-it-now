@@ -1,0 +1,70 @@
+<div class="space-y-6">
+  <!-- Default Strategy Demo -->
+  <div class="learning-card">
+    <h4 class="text-lg font-semibold mb-4 text-foreground">
+      Default Strategy Demo
+    </h4>
+    <div class="flex items-center gap-4 mb-4">
+      <span class="text-2xl font-bold text-primary">{{ counter }}</span>
+      <button
+        (click)="increment()"
+        class="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
+      >
+        Increment
+      </button>
+      <button
+        (click)="asyncIncrement()"
+        class="px-4 py-2 bg-secondary text-secondary-foreground rounded-lg hover:bg-secondary/90 transition-colors"
+      >
+        Async Increment
+      </button>
+    </div>
+    <p class="text-sm text-muted-foreground">
+      Both buttons trigger change detection immediately. The async button
+      updates after 1 second.
+    </p>
+  </div>
+
+  <!-- OnPush Strategy Demo -->
+  <div class="learning-card">
+    <h4 class="text-lg font-semibold mb-4 text-foreground">
+      OnPush Strategy Demo
+    </h4>
+    <div class="mb-4">
+      <p class="mb-2">
+        Current user: <strong>{{ user.name }}</strong>
+      </p>
+      <app-child-change-detection [user]="user"></app-child-change-detection>
+    </div>
+    <div class="flex gap-4">
+      <button
+        (click)="changeName()"
+        class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+      >
+        Change Name (New Object)
+      </button>
+      <button
+        (click)="mutateName()"
+        class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+      >
+        Mutate Name (Same Object)
+      </button>
+    </div>
+    <p class="text-sm text-muted-foreground mt-2">
+      Green button creates new object (OnPush detects). Red button mutates
+      existing object (OnPush doesn't detect).
+    </p>
+  </div>
+
+  <!-- Manual Detection Demo -->
+  <div class="learning-card">
+    <h4 class="text-lg font-semibold mb-4 text-foreground">
+      Manual Detection Demo
+    </h4>
+    <app-manual-change-detection></app-manual-change-detection>
+    <p class="text-sm text-muted-foreground mt-2">
+      This component is detached from change detection. Updates only happen when
+      manually triggered.
+    </p>
+  </div>
+</div>

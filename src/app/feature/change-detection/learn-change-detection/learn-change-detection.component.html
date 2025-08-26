@@ -1,0 +1,502 @@
+<div class="flex min-h-screen">
+  <!-- Sidebar Navigation -->
+  <nav class="w-64 bg-sidebar border-r border-sidebar-border p-6">
+    <div class="mb-8">
+      <h1 class="text-2xl font-bold text-primary mb-2">Angular CD</h1>
+      <p class="text-sm text-muted-foreground">Change Detection Learning</p>
+    </div>
+
+    <ul class="space-y-2">
+      <li *ngFor="let section of sections">
+        <button
+          (click)="setActiveSection(section.id)"
+          [class]="
+            'w-full text-left px-4 py-3 rounded-lg transition-colors flex items-center gap-3 ' +
+            (activeSection === section.id
+              ? 'bg-sidebar-primary text-sidebar-primary-foreground'
+              : 'hover:bg-sidebar-primary/50')
+          "
+        >
+          <span class="text-lg">{{ section.icon }}</span>
+          <span class="font-medium">{{ section.title }}</span>
+        </button>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="flex-1 p-8">
+    <!-- Overview Section -->
+    <div *ngIf="activeSection === 'overview'" class="max-w-4xl">
+      <div class="mb-8">
+        <h1 class="text-4xl font-bold text-foreground mb-4">
+          Angular Change Detection
+        </h1>
+        <p class="text-xl text-muted-foreground">
+          Learn how Angular detects and updates changes in your application
+        </p>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-6 mb-8">
+        <div class="learning-card">
+          <h3 class="text-xl font-semibold mb-3 text-foreground">
+            What is Change Detection?
+          </h3>
+          <p class="text-muted-foreground mb-4">
+            Change detection is the process Angular uses to check if your
+            application state has changed, and if so, update the DOM to reflect
+            those changes.
+          </p>
+          <div class="performance-indicator performance-medium">
+            <span>⚡</span>
+            <span>Automatic Process</span>
+          </div>
+        </div>
+
+        <div class="learning-card">
+          <h3 class="text-xl font-semibold mb-3 text-foreground">
+            Why Does It Matter?
+          </h3>
+          <p class="text-muted-foreground mb-4">
+            Understanding change detection helps you build faster, more
+            efficient Angular applications by controlling when and how updates
+            happen.
+          </p>
+          <div class="performance-indicator performance-fast">
+            <span>🚀</span>
+            <span>Performance Critical</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="learning-card">
+        <h3 class="text-xl font-semibold mb-4 text-foreground">
+          Three Main Strategies
+        </h3>
+        <div class="grid md:grid-cols-3 gap-4">
+          <div class="p-4 border border-border rounded-lg">
+            <div class="strategy-badge mb-2">Default</div>
+            <h4 class="font-semibold mb-2">Default Strategy</h4>
+            <p class="text-sm text-muted-foreground">
+              Checks all components on every change
+            </p>
+          </div>
+          <div class="p-4 border border-border rounded-lg">
+            <div class="strategy-badge mb-2">OnPush</div>
+            <h4 class="font-semibold mb-2">OnPush Strategy</h4>
+            <p class="text-sm text-muted-foreground">
+              Only checks when inputs change
+            </p>
+          </div>
+          <div class="p-4 border border-border rounded-lg">
+            <div class="strategy-badge mb-2">Manual</div>
+            <h4 class="font-semibold mb-2">Manual Detection</h4>
+            <p class="text-sm text-muted-foreground">
+              You control when to check
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Default Strategy Section -->
+    <div *ngIf="activeSection === 'default'" class="max-w-4xl">
+      <div class="mb-8">
+        <h1 class="text-3xl font-bold text-foreground mb-4">
+          Default Change Detection
+        </h1>
+        <p class="text-lg text-muted-foreground">
+          The default strategy checks all components whenever any change occurs
+        </p>
+      </div>
+
+      <div class="grid lg:grid-cols-2 gap-8">
+        <div class="learning-card">
+          <h3 class="text-xl font-semibold mb-4 text-foreground">
+            How It Works
+          </h3>
+          <ul class="space-y-2 text-muted-foreground mb-4">
+            <li class="flex items-start gap-2">
+              <span class="text-primary">•</span>
+              <span>Angular runs change detection on ALL components</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-primary">•</span>
+              <span>Triggered by events, HTTP requests, timers</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-primary">•</span>
+              <span>Simple but can be slow with many components</span>
+            </li>
+          </ul>
+          <div class="performance-indicator performance-slow">
+            <span>🐌</span>
+            <span>Can be slow with many components</span>
+          </div>
+        </div>
+
+        <!-- Removed problematic code example with HTML entities -->
+        <div class="learning-card">
+          <h3 class="text-xl font-semibold mb-4 text-foreground">
+            Key Features
+          </h3>
+          <ul class="space-y-2 text-muted-foreground">
+            <li class="flex items-start gap-2">
+              <span class="text-primary">✓</span>
+              <span>Automatic change detection</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-primary">✓</span>
+              <span>No configuration needed</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-primary">✓</span>
+              <span>Works with all data types</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-primary">⚠</span>
+              <span>Can impact performance</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="demo-section">
+        <h3 class="text-xl font-semibold mb-4 text-foreground">
+          Interactive Demo
+        </h3>
+        <app-change-detection></app-change-detection>
+      </div>
+    </div>
+
+    <!-- OnPush Strategy Section -->
+    <div *ngIf="activeSection === 'onpush'" class="max-w-4xl">
+      <div class="mb-8">
+        <h1 class="text-3xl font-bold text-foreground mb-4">
+          OnPush Change Detection
+        </h1>
+        <p class="text-lg text-muted-foreground">
+          OnPush strategy only checks components when their inputs change
+        </p>
+      </div>
+
+      <div class="grid lg:grid-cols-2 gap-8">
+        <div class="learning-card">
+          <h3 class="text-xl font-semibold mb-4 text-foreground">
+            How It Works
+          </h3>
+          <ul class="space-y-2 text-muted-foreground mb-4">
+            <li class="flex items-start gap-2">
+              <span class="text-primary">•</span>
+              <span>Only checks when &#64; properties change</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-primary">•</span>
+              <span>Requires immutable data patterns</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-primary">•</span>
+              <span>Much faster for large applications</span>
+            </li>
+          </ul>
+          <div class="performance-indicator performance-fast">
+            <span>⚡</span>
+            <span>High Performance</span>
+          </div>
+        </div>
+
+        <!-- Removed problematic code example with HTML entities -->
+        <div class="learning-card">
+          <h3 class="text-xl font-semibold mb-4 text-foreground">
+            Configuration
+          </h3>
+          <ul class="space-y-2 text-muted-foreground">
+            <li class="flex items-start gap-2">
+              <span class="text-primary">1.</span>
+              <span>Import ChangeDetectionStrategy</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-primary">2.</span>
+              <span>Set changeDetection: OnPush</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-primary">3.</span>
+              <span>Use immutable data patterns</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-primary">4.</span>
+              <span>Test input changes carefully</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="learning-card">
+        <h3 class="text-xl font-semibold mb-4 text-foreground">Key Concepts</h3>
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="p-4 bg-green-50 border border-green-200 rounded-lg">
+            <h4 class="font-semibold text-green-800 mb-2">
+              ✅ Will Trigger Update
+            </h4>
+            <ul class="text-sm text-green-700 space-y-1">
+              <li>• New object reference</li>
+              <li>• Different primitive value</li>
+              <li>• Manual detectChanges()</li>
+            </ul>
+          </div>
+          <div class="p-4 bg-red-50 border border-red-200 rounded-lg">
+            <h4 class="font-semibold text-red-800 mb-2">
+              ❌ Won't Trigger Update
+            </h4>
+            <ul class="text-sm text-red-700 space-y-1">
+              <li>• Mutating object properties</li>
+              <li>• Array push/pop operations</li>
+              <li>• Internal component changes</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo-section">
+        <h3 class="text-xl font-semibold mb-4 text-foreground">
+          Interactive Demo
+        </h3>
+        <app-child-change-detection></app-child-change-detection>
+      </div>
+    </div>
+
+    <!-- Manual Detection Section -->
+    <div *ngIf="activeSection === 'manual'" class="max-w-4xl">
+      <div class="mb-8">
+        <h1 class="text-3xl font-bold text-foreground mb-4">
+          Manual Change Detection
+        </h1>
+        <p class="text-lg text-muted-foreground">
+          Take full control over when change detection runs
+        </p>
+      </div>
+
+      <div class="grid lg:grid-cols-2 gap-8">
+        <div class="learning-card">
+          <h3 class="text-xl font-semibold mb-4 text-foreground">
+            How It Works
+          </h3>
+          <ul class="space-y-2 text-muted-foreground mb-4">
+            <li class="flex items-start gap-2">
+              <span class="text-primary">•</span>
+              <span>Detach component from change detection</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-primary">•</span>
+              <span>Manually trigger updates when needed</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-primary">•</span>
+              <span>Ultimate performance control</span>
+            </li>
+          </ul>
+          <div class="performance-indicator performance-fast">
+            <span>🎛️</span>
+            <span>Full Control</span>
+          </div>
+        </div>
+
+        <!-- Removed problematic code example with HTML entities -->
+        <div class="learning-card">
+          <h3 class="text-xl font-semibold mb-4 text-foreground">
+            Key Methods
+          </h3>
+          <ul class="space-y-2 text-muted-foreground">
+            <li class="flex items-start gap-2">
+              <span class="text-primary">📌</span>
+              <span
+                ><strong>detach()</strong> - Remove from change detection</span
+              >
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-primary">🔄</span>
+              <span
+                ><strong>detectChanges()</strong> - Trigger manual update</span
+              >
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-primary">🔗</span>
+              <span
+                ><strong>reattach()</strong> - Re-enable automatic
+                detection</span
+              >
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-primary">✅</span>
+              <span><strong>markForCheck()</strong> - Schedule next check</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="learning-card">
+        <h3 class="text-xl font-semibold mb-4 text-foreground">
+          Common Use Cases
+        </h3>
+        <div class="grid md:grid-cols-3 gap-4">
+          <div class="p-4 border border-border rounded-lg">
+            <h4 class="font-semibold mb-2">🎮 Games</h4>
+            <p class="text-sm text-muted-foreground">
+              High-frequency updates with custom timing
+            </p>
+          </div>
+          <div class="p-4 border border-border rounded-lg">
+            <h4 class="font-semibold mb-2">📊 Data Viz</h4>
+            <p class="text-sm text-muted-foreground">
+              Complex charts with performance needs
+            </p>
+          </div>
+          <div class="p-4 border border-border rounded-lg">
+            <h4 class="font-semibold mb-2">🔄 Real-time</h4>
+            <p class="text-sm text-muted-foreground">
+              WebSocket updates outside Angular zone
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo-section">
+        <h3 class="text-xl font-semibold mb-4 text-foreground">
+          Interactive Demo
+        </h3>
+        <app-manual-change-detection></app-manual-change-detection>
+      </div>
+    </div>
+
+    <!-- Comparison Section -->
+    <div *ngIf="activeSection === 'comparison'" class="max-w-4xl">
+      <div class="mb-8">
+        <h1 class="text-3xl font-bold text-foreground mb-4">
+          Strategy Comparison
+        </h1>
+        <p class="text-lg text-muted-foreground">
+          Choose the right strategy for your use case
+        </p>
+      </div>
+
+      <div class="learning-card">
+        <div class="overflow-x-auto">
+          <table class="w-full">
+            <thead>
+              <tr class="border-b border-border">
+                <th class="text-left py-3 px-4 font-semibold">Strategy</th>
+                <th class="text-left py-3 px-4 font-semibold">Performance</th>
+                <th class="text-left py-3 px-4 font-semibold">Complexity</th>
+                <th class="text-left py-3 px-4 font-semibold">Best For</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-b border-border">
+                <td class="py-3 px-4">
+                  <div class="strategy-badge">Default</div>
+                </td>
+                <td class="py-3 px-4">
+                  <div class="performance-indicator performance-slow">
+                    <span>🐌</span>
+                    <span>Slow</span>
+                  </div>
+                </td>
+                <td class="py-3 px-4">
+                  <span class="text-green-600 font-medium">Low</span>
+                </td>
+                <td class="py-3 px-4 text-muted-foreground">
+                  Small apps, prototypes
+                </td>
+              </tr>
+              <tr class="border-b border-border">
+                <td class="py-3 px-4">
+                  <div class="strategy-badge">OnPush</div>
+                </td>
+                <td class="py-3 px-4">
+                  <div class="performance-indicator performance-fast">
+                    <span>⚡</span>
+                    <span>Fast</span>
+                  </div>
+                </td>
+                <td class="py-3 px-4">
+                  <span class="text-yellow-600 font-medium">Medium</span>
+                </td>
+                <td class="py-3 px-4 text-muted-foreground">
+                  Most production apps
+                </td>
+              </tr>
+              <tr>
+                <td class="py-3 px-4">
+                  <div class="strategy-badge">Manual</div>
+                </td>
+                <td class="py-3 px-4">
+                  <div class="performance-indicator performance-fast">
+                    <span>🚀</span>
+                    <span>Fastest</span>
+                  </div>
+                </td>
+                <td class="py-3 px-4">
+                  <span class="text-red-600 font-medium">High</span>
+                </td>
+                <td class="py-3 px-4 text-muted-foreground">
+                  Performance-critical features
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-6 mt-8">
+        <div class="learning-card">
+          <h3 class="text-xl font-semibold mb-4 text-foreground">
+            Quick Decision Guide
+          </h3>
+          <div class="space-y-3">
+            <div class="p-3 bg-green-50 border border-green-200 rounded-lg">
+              <p class="text-sm">
+                <strong>Start with Default</strong> for learning and small
+                projects
+              </p>
+            </div>
+            <div class="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+              <p class="text-sm">
+                <strong>Use OnPush</strong> for most production components
+              </p>
+            </div>
+            <div class="p-3 bg-purple-50 border border-purple-200 rounded-lg">
+              <p class="text-sm">
+                <strong>Go Manual</strong> only when you need maximum
+                performance
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="learning-card">
+          <h3 class="text-xl font-semibold mb-4 text-foreground">
+            Performance Tips
+          </h3>
+          <ul class="space-y-2 text-muted-foreground">
+            <li class="flex items-start gap-2">
+              <span class="text-primary">💡</span>
+              <span>Use OnPush for leaf components first</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-primary">💡</span>
+              <span>Prefer immutable data patterns</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-primary">💡</span>
+              <span>Use trackBy functions for *ngFor</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-primary">💡</span>
+              <span>Consider async pipe for observables</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>

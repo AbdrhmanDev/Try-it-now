@@ -1,0 +1,41 @@
+<div class="p-4 bg-purple-50 border border-purple-200 rounded-lg">
+  <div class="flex items-center gap-2 mb-4">
+    <span class="strategy-badge">Manual</span>
+    <span class="text-sm font-medium">Detached Component</span>
+  </div>
+
+  <div class="mb-4">
+    <p class="text-lg">
+      Counter: <strong>{{ counter }}</strong>
+    </p>
+    <p class="text-sm text-muted-foreground">
+      Status: {{ isRunning ? "Running..." : "Stopped" }}
+    </p>
+  </div>
+
+  <div class="flex gap-2">
+    <button
+      (click)="startCounter()"
+      [disabled]="isRunning"
+      class="px-3 py-2 bg-primary text-primary-foreground rounded text-sm hover:bg-primary/90 transition-colors disabled:opacity-50"
+    >
+      Start Counter
+    </button>
+    <button
+      (click)="detectChanges()"
+      class="px-3 py-2 bg-accent text-accent-foreground rounded text-sm hover:bg-accent/90 transition-colors"
+    >
+      Update UI
+    </button>
+    <button
+      (click)="reset()"
+      class="px-3 py-2 bg-gray-500 text-white rounded text-sm hover:bg-gray-600 transition-colors"
+    >
+      Reset
+    </button>
+  </div>
+
+  <p class="text-xs text-muted-foreground mt-2">
+    Counter runs in background. Click "Update UI" to see changes.
+  </p>
+</div>
