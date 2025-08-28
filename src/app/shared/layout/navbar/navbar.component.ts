@@ -1,3 +1,4 @@
+import { AuthService } from './../../../core/services/auth.service';
 import { CommonModule } from '@angular/common';
 import { Component, computed, signal, OnInit, OnDestroy } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
@@ -24,6 +25,7 @@ interface NavItem {
   standalone: true, // Required for standalone component
 })
 export class NavbarComponent implements OnInit, OnDestroy {
+  constructor(public AuthService: AuthService) {}
   // Reactive state
   private stocksSignal = signal<Stock[]>([
     { symbol: 'AAPL', name: 'Apple Inc.', price: 175.43, change: 2.15 },
