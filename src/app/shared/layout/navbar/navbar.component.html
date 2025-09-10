@@ -24,11 +24,11 @@
       <!-- Services with Mega Menu -->
       <div class="relative" (click)="toggleMegaMenu(true)">
         <a
-          [routerLink]="item.path"
-          routerLinkActive="active"
-          [routerLinkActiveOptions]="{ exact: true }"
-          class="text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200 flex items-center gap-1"
+          type="button"
+          class="text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200 flex items-center gap-1 bg-transparent border-none cursor-pointer p-0"
           (click)="toggleMegaMenu(!isMegaMenuOpen())"
+          [attr.aria-expanded]="isMegaMenuOpen()"
+          aria-haspopup="true"
         >
           {{ item.label }}
           <svg
@@ -151,7 +151,7 @@
     <div class="mobile-menu bg-gray-900 p-6 w-4/5 max-w-sm h-full text-white">
       <ul class="mobile-nav-links space-y-6 mt-8">
         @for (item of navItems(); track item.path) {
-        <li>
+        <li class="mobile-nav-item">
           <a
             [routerLink]="item.path"
             routerLinkActive="active"
