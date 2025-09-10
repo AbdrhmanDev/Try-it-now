@@ -1,5 +1,11 @@
 <app-navbar></app-navbar>
 
-<div class="">
+<!-- <div class="top">
   <router-outlet></router-outlet>
-</div>
+</div> -->
+
+<main [@routeAnimations]="prepareRoute(outlet)">
+  <router-outlet #outlet="outlet"></router-outlet>
+</main>
+
+<app-loading *ngIf="isLoading"></app-loading>

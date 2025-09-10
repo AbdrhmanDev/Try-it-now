@@ -1,1 +1,62 @@
-<p>home works!</p>
+<div class="app-container" [class.dark-theme]="theme() === 'dark'">
+  <!-- Header -->
+  <header class="app-header">
+    <h1>🚀 Angular Advanced Playground</h1>
+    <button mat-icon-button (click)="toggleTheme()" aria-label="Toggle theme">
+      <mat-icon>{{
+        theme() === "light" ? "dark_mode" : "light_mode"
+      }}</mat-icon>
+    </button>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <h2>Master Angular’s Advanced Concepts</h2>
+    <p>
+      Each card below unlocks a deep-dive into modern Angular patterns and APIs.
+    </p>
+  </section>
+
+  <!-- Topics Grid -->
+  <mat-grid-list
+    cols="3"
+    rowHeight="200px"
+    gutterSize="16px"
+    class="topics-grid"
+  >
+    <mat-grid-tile
+      *ngFor="let topic of topics(); let i = index; trackBy: trackByTopic"
+    >
+      <mat-card
+        [@cardHover]="hoveredCard() === i ? 'hovered' : 'default'"
+        (mouseenter)="setHover(i)"
+        (mouseleave)="clearHover()"
+        class="topic-card"
+        [style.border-top-color]="topic.color"
+      >
+        <mat-card-header>
+          <mat-icon
+            mat-card-avatar
+            class="topic-icon"
+            [style.color]="topic.color"
+            >{{ topic.icon }}</mat-icon
+          >
+          <mat-card-title>{{ topic.title }}</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <p>{{ topic.description }}</p>
+        </mat-card-content>
+        <mat-card-actions align="end">
+          <button mat-button color="primary" [routerLink]="topic.route">
+            Explore <mat-icon>arrow_forward</mat-icon>
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    </mat-grid-tile>
+  </mat-grid-list>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <p>Built with 💙 and Angular 19</p>
+  </footer>
+</div>

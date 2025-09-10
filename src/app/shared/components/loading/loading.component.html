@@ -1,0 +1,21 @@
+<div class="loader-overlay">
+  <div class="terminal">
+    <div class="terminal-header">
+      <div class="dots">
+        <span class="dot red"></span>
+        <span class="dot yellow"></span>
+        <span class="dot green"></span>
+      </div>
+      <div class="terminal-title">angular-compiler</div>
+    </div>
+    <div class="terminal-body">
+      <div class="line" *ngFor="let line of lines; let i = index">
+        <span class="prompt">❯</span>
+        <span class="text" [style.animation-delay]="i * 0.3 + 's'">{{
+          line
+        }}</span>
+      </div>
+      <div class="cursor">█</div>
+    </div>
+  </div>
+</div>

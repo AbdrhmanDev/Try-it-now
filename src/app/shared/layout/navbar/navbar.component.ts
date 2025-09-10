@@ -54,7 +54,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
     { label: 'About', path: '/about' },
     {
       label: 'Services',
-      path: '/services',
+      path: '',
       isMegaMenu: true, // ← This will trigger the mega dropdown
     },
     { label: 'Test', path: '/test' },
