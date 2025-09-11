@@ -37,7 +37,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
     { symbol: 'NVDA', name: 'NVIDIA Corp.', price: 875.28, change: 18.73 },
     { symbol: 'NFLX', name: 'Netflix Inc.', price: 445.87, change: -3.21 },
   ]);
-
+  isMobile = signal<boolean>(window.innerWidth < 768);
   private favoritesSignal = signal<string[]>(['AAPL', 'TSLA']);
 
   stocks = computed(() => this.stocksSignal());
@@ -107,13 +107,21 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   private updateSubscription: any;
   isMegaMenuOpen = signal(false);
+  isMobileMegaOpen = signal(false);
   private closeTimeout: any;
   ngOnInit() {
     // Simulate scroll
     window.addEventListener('scroll', () => {
       this.isScrolled.set(window.scrollY > 50);
     });
+    window.addEventListener('resize', () => {
+      this.isMobile.set(window.innerWidth < 768);
+    });
 
+    // Your existing scroll listener...
+    window.addEventListener('scroll', () => {
+      this.isScrolled.set(window.scrollY > 50);
+    });
     // Auto-update stock prices
     this.updateSubscription = setInterval(() => {
       this.updatePrices();
@@ -123,6 +131,16 @@ export class NavbarComponent implements OnInit, OnDestroy {
   toggleMegaMenu(open: boolean) {
     this.isMegaMenuOpen.set(open);
     console.log(this.isMegaMenuOpen);
+  }
+
+  toggleMobileMega() {
+    if (this.isMobile()) {
+      this.isMobileMegaOpen.update((v) => !v);
+    }
+  }
+  toggleMenu() {
+    this.isMenuOpen.update((value) => !value);
+    console.log('isMenuOpen:', this.isMenuOpen()); // Debug
   }
   ngOnDestroy() {
     if (this.updateSubscription) {
@@ -137,9 +155,9 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.isMegaMenuOpen.set(true);
   }
   // Menu controls
-  toggleMenu() {
-    this.isMenuOpen.update((value) => !value);
-  }
+  // toggleMenu() {
+  //   this.isMenuOpen.update((value) => !value);
+  // }
 
   isActive(path: string): boolean {
     return window.location.pathname === path;
@@ -170,6 +188,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
     this.isMenuOpen.set(false);
     this.isMegaMenuOpen.set(false);
   }
+
   closeMegaMenu() {
     this.closeTimeout = setTimeout(() => {
       this.isMegaMenuOpen.set(false);

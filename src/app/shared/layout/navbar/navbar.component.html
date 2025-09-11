@@ -126,22 +126,6 @@
     </button>
   </div>
 
-  <!-- Stock Ticker (Optional) -->
-  <!-- <div class="bg-gray-800 text-xs text-gray-300 py-1 overflow-hidden">
-    <div class="inline-flex animate-infinite-scroll">
-      @for (stock of stocks(); track stock.symbol) {
-      <span class="mx-6 flex items-center">
-        <span>{{ stock.symbol }}</span>
-        <span>${{ stock.price.toFixed(2) }}</span>
-        <span [class]="getChangeClass(stock.change)"
-          >{{ (stock.change) }}
-          {{ absoluteValue(stock.change).toFixed(2) }}</span
-        >
-      </span>
-      }
-    </div>
-  </div> -->
-
   <!-- Mobile Menu Overlay -->
   <div
     class="mobile-menu-overlay fixed inset-0 bg-black/80 z-40"
@@ -152,6 +136,44 @@
       <ul class="mobile-nav-links space-y-6 mt-8">
         @for (item of navItems(); track item.path) {
         <li class="mobile-nav-item">
+          @if (item.isMegaMenu && isMobile()) {
+          <!-- Mobile Mega Menu Trigger -->
+          <button
+            type="button"
+            class="mobile-nav-link block text-xl w-full text-left"
+            (click)="toggleMobileMega(); $event.stopPropagation()"
+          >
+            {{ item.label }}
+            <span
+              class="float-right transition-transform"
+              [class.rotate-180]="isMobileMegaOpen()"
+            >
+              ▼
+            </span>
+          </button>
+
+          <!-- Mobile Mega Menu Content (Accordion) -->
+          @if (isMobileMegaOpen()) {
+          <div class="mt-4 ml-4 border-l-2 border-blue-500 pl-4 space-y-3">
+            @for (column of megaMenuContent; track column.title) {
+            <div>
+              <h4 class="font-semibold text-blue-300 mb-2">
+                {{ column.title }}
+              </h4>
+              @for (link of column.links; track link.path) {
+              <a
+                [routerLink]="link.path"
+                (click)="closeMenu()"
+                class="block py-2 text-gray-300 hover:text-white hover:bg-gray-800 rounded"
+              >
+                {{ link.label }}
+              </a>
+              }
+            </div>
+            }
+          </div>
+          } } @else {
+          <!-- Regular Link -->
           <a
             [routerLink]="item.path"
             routerLinkActive="active"
@@ -160,19 +182,22 @@
           >
             {{ item.label }}
           </a>
+          }
         </li>
         }
       </ul>
 
       <div class="mobile-auth mt-10 space-y-4">
         <button
-          class="btn btn-login w-full py-3 bg-transparent border border-white text-white rounded"
+          class="btn mobile-btn btn-login w-full py-3 bg-transparent border border-white text-white rounded mobile-btn"
+          routerLink="/login"
           (click)="closeMenu()"
         >
           Login
         </button>
         <button
-          class="btn btn-signup w-full py-3 bg-yellow-500 text-gray-900 font-semibold rounded"
+          class="btn btn-signup mobile-btn w-full py-3 bg-yellow-500 text-gray-900 font-semibold rounded mobile-btn"
+          routerLink="/signup"
           (click)="closeMenu()"
         >
           Sign Up
