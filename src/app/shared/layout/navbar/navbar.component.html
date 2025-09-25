@@ -1,208 +1,396 @@
+<!-- Creative Topics Navbar -->
 <nav
-  class="navbar mb-2 top-0 w-full z-50 transition-all duration-300"
+  class="navbar fixed top-0 left-0 right-0 z-50 transition-all duration-500 ease-out"
   [class.scrolled]="isScrolled()"
   [class.menu-open]="isMenuOpen()"
 >
-  <div
-    class="navbar-container flex hover:text-blue-600 items-center justify-between px-6 py-4"
-  >
-    <!-- Logo -->
-    <a
-      routerLink="/"
-      class="logo flex items-center gap-2 text-xl font-bold text-white"
-      (click)="closeMenu()"
-    >
-      <i class="fas fa-rocket text-yellow-400"></i>
-      <span>AngularApp</span>
-    </a>
-
-    <!-- Desktop Links & Auth (shown on medium+ screens) -->
-    <!-- Desktop Links -->
-    <!-- Desktop Nav -->
-    <div class="hidden md:flex items-center space-x-8 relative">
-      @for (item of navItems(); track item.path) { @if (item.isMegaMenu) {
-      <!-- Services with Mega Menu -->
-      <div class="relative" (click)="toggleMegaMenu(true)">
+  <!-- Navbar Container -->
+  <div class="navbar-container max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-16">
+      <!-- Logo & Brand -->
+      <div class="flex items-center space-x-4">
         <a
-          type="button"
-          class="text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200 flex items-center gap-1 bg-transparent border-none cursor-pointer p-0"
-          (click)="toggleMegaMenu(!isMegaMenuOpen())"
-          [attr.aria-expanded]="isMegaMenuOpen()"
-          aria-haspopup="true"
+          routerLink="/"
+          class="logo-brand flex items-center space-x-3 group"
+          (click)="closeAllMenus()"
         >
-          {{ item.label }}
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-4 w-4"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-              clip-rule="evenodd"
-            />
-          </svg>
-        </a>
+          <!-- Animated Logo -->
+          <div class="logo-container relative">
+            <div
+              class="logo-icon w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-lg group-hover:shadow-blue-500/25 transition-all duration-300"
+            >
+              <i
+                class="fab fa-angular text-white text-lg group-hover:rotate-180 transition-transform duration-500"
+              ></i>
+            </div>
+            <div
+              class="absolute -top-1 -right-1 w-3 h-3 bg-gradient-to-r from-orange-400 to-pink-500 rounded-full animate-pulse"
+            ></div>
+          </div>
 
-        <!-- Mega Menu Dropdown -->
-        <div
-          *ngIf="isMegaMenuOpen()"
-          id="mega-menu-full-dropdown"
-          class="absolute left-0 mt-2 w-screen max-w-4xl px-4 py-5 mx-auto bg-white border-y border-gray-200 shadow-lg dark:bg-gray-800 dark:border-gray-600 rounded-lg"
-          (mouseenter)="toggleMegaMenu(true)"
-          (mouseleave)="toggleMegaMenu(false)"
+          <!-- Brand Text -->
+          <div class="brand-text hidden sm:block">
+            <h1
+              class="text-xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent"
+            >
+              Angular<span class="text-blue-400">Hub</span>
+            </h1>
+            <p class="text-xs text-gray-400 -mt-1">Learn • Build • Excel</p>
+          </div>
+        </a>
+      </div>
+
+      <!-- Desktop Navigation -->
+      <div class="hidden lg:flex items-center space-x-1">
+        @for (item of navItems(); track item.path) { @if (item.isMegaMenu) {
+        <!-- Topics Mega Menu Trigger -->
+        <div class="relative">
+          <button
+            type="button"
+            class="nav-link px-4 py-2 rounded-lg text-gray-300 hover:text-white hover:bg-white/10 transition-all duration-200 flex items-center space-x-2 group"
+            (click)="toggleMegaMenu()"
+            [class.active]="isMegaMenuOpen()"
+          >
+            <i
+              [class]="item.icon"
+              class="text-sm group-hover:scale-110 transition-transform duration-200"
+            ></i>
+            <span class="font-medium">{{ item.label }}</span>
+            <i
+              class="fas fa-chevron-down text-xs transition-transform duration-200"
+              [class.rotate-180]="isMegaMenuOpen()"
+            ></i>
+          </button>
+        </div>
+        } @else {
+        <!-- Regular Navigation Link -->
+        <a
+          [routerLink]="item.path"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: item.path === '/' }"
+          class="nav-link px-4 py-2 rounded-lg text-gray-300 hover:text-white hover:bg-white/10 transition-all duration-200 flex items-center space-x-2 group"
+          [title]="item.description"
+          (click)="closeAllMenus()"
         >
-          <div class="grid max-w-screen-xl grid-cols-1 sm:grid-cols-2 md:px-6">
-            @for (column of megaMenuContent; track column.title) {
-            <ul class="p-2">
-              <li class="font-semibold text-gray-800 dark:text-gray-100 mb-2">
-                {{ column.title }}
-              </li>
-              @for (link of column.links; track link.path) {
-              <li>
-                <a
-                  [routerLink]="link.path"
-                  (click)="closeMenu()"
-                  class="block p-3 rounded-lg text-sm text-gray-600 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-700"
-                >
-                  <div class="font-medium">{{ link.label }}</div>
-                  <div class="text-gray-500 dark:text-gray-400">Learn more</div>
-                </a>
-              </li>
-              }
-            </ul>
+          <i
+            [class]="item.icon"
+            class="text-sm group-hover:scale-110 transition-transform duration-200"
+          ></i>
+          <span class="font-medium">{{ item.label }}</span>
+        </a>
+        } }
+      </div>
+
+      <!-- Search & Auth -->
+      <div class="hidden lg:flex items-center space-x-4">
+        <!-- Search Bar -->
+        <div class="relative">
+          <div
+            class="search-container relative"
+            [class.focused]="isSearchFocused()"
+          >
+            <input
+              type="text"
+              placeholder="Search topics..."
+              class="search-input w-64 pl-10 pr-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all duration-200"
+              [(ngModel)]="searchQuery"
+              (focus)="onSearchFocus()"
+              (blur)="onSearchBlur()"
+            />
+            <i
+              class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+            ></i>
+          </div>
+        </div>
+
+        <!-- Auth Buttons -->
+        @if (!authService.isLoggedIn()) {
+        <button
+          routerLink="/login"
+          class="auth-btn login-btn px-4 py-2 text-gray-300 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200 font-medium"
+        >
+          Sign In
+        </button>
+        <button
+          routerLink="/register"
+          class="auth-btn signup-btn px-6 py-2 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-semibold rounded-lg shadow-lg hover:shadow-blue-500/25 transition-all duration-200 transform hover:scale-105"
+        >
+          Get Started
+        </button>
+        } @else {
+        <!-- User Menu -->
+        <div class="user-menu relative">
+          <button
+            class="user-avatar w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold shadow-lg hover:shadow-blue-500/25 transition-all duration-200"
+          >
+            {{ currentUser?.name?.charAt(0) || "U" }}
+          </button>
+        </div>
+        }
+      </div>
+
+      <!-- Mobile Menu Button -->
+      <button
+        class="lg:hidden mobile-menu-btn relative w-10 h-10 rounded-lg bg-white/10 hover:bg-white/20 transition-all duration-200 flex items-center justify-center"
+        (click)="toggleMenu()"
+        [class.active]="isMenuOpen()"
+      >
+        <div class="hamburger">
+          <span
+            class="line line-1 block w-5 h-0.5 bg-white mb-1 transition-all duration-300"
+          ></span>
+          <span
+            class="line line-2 block w-5 h-0.5 bg-white mb-1 transition-all duration-300"
+          ></span>
+          <span
+            class="line line-3 block w-5 h-0.5 bg-white transition-all duration-300"
+          ></span>
+        </div>
+      </button>
+    </div>
+  </div>
+
+  <!-- Topics Mega Menu -->
+  @if (isMegaMenuOpen()) {
+  <div
+    class="mega-menu absolute top-full left-0 right-0 bg-slate-900/95 backdrop-blur-lg border-t border-white/10 shadow-2xl"
+  >
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        @for (category of topicsCategories(); track category.title) {
+        <div class="topic-category">
+          <!-- Category Header -->
+          <div
+            class="category-header flex items-center space-x-3 mb-4 pb-3 border-b border-white/10"
+          >
+            <div
+              class="category-icon w-8 h-8 rounded-lg bg-gradient-to-br {{
+                category.color
+              }} flex items-center justify-center"
+            >
+              <i [class]="category.icon" class="text-white text-sm"></i>
+            </div>
+            <h3 class="text-lg font-semibold text-white">
+              {{ category.title }}
+            </h3>
+          </div>
+
+          <!-- Category Topics -->
+          <div class="topic-links space-y-2">
+            @for (topic of category.topics; track topic.path) {
+            <a
+              [routerLink]="topic.path"
+              class="topic-link block p-3 rounded-lg hover:bg-white/10 transition-all duration-200 group cursor-pointer"
+              (click)="closeAllMenus()"
+            >
+              <div class="flex items-start justify-between">
+                <div class="flex-1">
+                  <div class="flex items-center space-x-2 mb-1">
+                    <h4
+                      class="text-sm font-medium text-white group-hover:text-blue-400 transition-colors duration-200"
+                    >
+                      {{ topic.label }}
+                    </h4>
+                    @if (topic.isNew) {
+                    <span
+                      class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-500/20 text-green-400"
+                    >
+                      New
+                    </span>
+                    } @if (topic.isPopular) {
+                    <span
+                      class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-orange-500/20 text-orange-400"
+                    >
+                      Popular
+                    </span>
+                    }
+                  </div>
+                  <p class="text-xs text-gray-400 leading-relaxed">
+                    {{ topic.description }}
+                  </p>
+                  <div class="mt-2 flex items-center space-x-2">
+                    <span
+                      class="text-xs {{
+                        getDifficultyColor(topic.difficulty)
+                      }} font-medium"
+                    >
+                      {{ topic.difficulty }}
+                    </span>
+                  </div>
+                </div>
+                <i
+                  class="fas fa-arrow-right text-gray-600 group-hover:text-blue-400 group-hover:translate-x-1 transition-all duration-200"
+                ></i>
+              </div>
+            </a>
             }
           </div>
         </div>
+        }
       </div>
-      } @else {
-      <!-- Regular Link -->
-      <a
-        [routerLink]="item.path"
-        routerLinkActive="active"
-        [routerLinkActiveOptions]="{ exact: true }"
-        class="text-gray-700 hover:text-blue-600 font-medium transition-colors duration-200"
-        (click)="closeMenu()"
-      >
-        {{ item.label }}
-      </a>
-      } }
 
-      <!-- Auth Buttons -->
-      <button
-        class="px-4 py-2 border border-gray-400 text-gray-700 rounded hover:bg-gray-100"
-        routerLink="/login"
-        *ngIf="!AuthService.isLoggedIn()"
-      >
-        Login
-      </button>
-      <button
-        class="px-4 py-2 border border-gray-400 text-gray-700 rounded hover:bg-gray-100"
-        routerLink="/login"
-        *ngIf="AuthService.isLoggedIn()"
-        (click)="AuthService.logout()"
-      >
-        logout
-      </button>
-      <button
-        class="px-4 py-2 bg-blue-600 text-white font-semibold rounded hover:bg-blue-700"
-        *ngIf="!AuthService.isLoggedIn()"
-      >
-        Sign Up
-      </button>
+      <!-- Quick Stats -->
+      <div class="mt-8 pt-6 border-t border-white/10">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center space-x-6 text-sm text-gray-400">
+            <span><i class="fas fa-book-open mr-2"></i>50+ Topics</span>
+            <span><i class="fas fa-code mr-2"></i>200+ Examples</span>
+            <span><i class="fas fa-users mr-2"></i>10k+ Learners</span>
+          </div>
+          <a
+            routerLink="/topics"
+            class="text-blue-400 hover:text-blue-300 font-medium text-sm transition-colors duration-200"
+            (click)="closeAllMenus()"
+          >
+            View All Topics <i class="fas fa-arrow-right ml-1"></i>
+          </a>
+        </div>
+      </div>
     </div>
-
-    <!-- Mobile Menu Button -->
-    <button
-      class="md:hidden flex flex-col"
-      [class.active]="isMenuOpen()"
-      (click)="toggleMenu()"
-      aria-label="Toggle menu"
-    >
-      <span class="w-6 h-0.5 bg-white mb-1"></span>
-      <span class="w-6 h-0.5 bg-white mb-1"></span>
-      <span class="w-6 h-0.5 bg-white"></span>
-    </button>
   </div>
+  }
 
   <!-- Mobile Menu Overlay -->
+  @if (isMenuOpen()) {
   <div
-    class="mobile-menu-overlay fixed inset-0 bg-black/80 z-40"
-    [class.active]="isMenuOpen()"
-    (click)="closeMenu()"
+    class="mobile-overlay fixed inset-0 bg-black/60 backdrop-blur-sm lg:hidden"
   >
-    <div class="mobile-menu bg-gray-900 p-6 w-4/5 max-w-sm h-full text-white">
-      <ul class="mobile-nav-links space-y-6 mt-8">
-        @for (item of navItems(); track item.path) {
-        <li class="mobile-nav-item">
-          @if (item.isMegaMenu && isMobile()) {
-          <!-- Mobile Mega Menu Trigger -->
-          <button
-            type="button"
-            class="mobile-nav-link block text-xl w-full text-left"
-            (click)="toggleMobileMega(); $event.stopPropagation()"
-          >
-            {{ item.label }}
-            <span
-              class="float-right transition-transform"
-              [class.rotate-180]="isMobileMegaOpen()"
+    <!-- Mobile Menu Panel -->
+    <div
+      class="mobile-menu fixed top-0 right-0 h-full w-80 max-w-sm bg-slate-900 shadow-2xl transform transition-transform duration-300 ease-out"
+    >
+      <div class="flex flex-col h-full">
+        <!-- Mobile Header -->
+        <div
+          class="mobile-header flex items-center justify-between p-6 border-b border-white/10"
+        >
+          <div class="flex items-center space-x-3">
+            <div
+              class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center"
             >
-              ▼
-            </span>
+              <i class="fab fa-angular text-white"></i>
+            </div>
+            <span class="text-lg font-bold text-white">AngularHub</span>
+          </div>
+          <button
+            class="close-btn w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors duration-200"
+            (click)="closeAllMenus()"
+          >
+            <i class="fas fa-times text-white"></i>
           </button>
+        </div>
 
-          <!-- Mobile Mega Menu Content (Accordion) -->
-          @if (isMobileMegaOpen()) {
-          <div class="mt-4 ml-4 border-l-2 border-blue-500 pl-4 space-y-3">
-            @for (column of megaMenuContent; track column.title) {
-            <div>
-              <h4 class="font-semibold text-blue-300 mb-2">
-                {{ column.title }}
-              </h4>
-              @for (link of column.links; track link.path) {
-              <a
-                [routerLink]="link.path"
-                (click)="closeMenu()"
-                class="block py-2 text-gray-300 hover:text-white hover:bg-gray-800 rounded"
+        <!-- Mobile Navigation -->
+        <div class="mobile-nav flex-1 overflow-y-auto p-6">
+          <div class="space-y-2">
+            @for (item of navItems(); track item.path) { @if (item.isMegaMenu) {
+            <!-- Mobile Topics Menu -->
+            <div class="mobile-mega-menu">
+              <button
+                class="mobile-nav-link w-full flex items-center justify-between p-3 rounded-lg text-gray-300 hover:text-white hover:bg-white/10 transition-all duration-200"
+                (click)="
+                  setActiveSubmenu(
+                    activeSubmenu() === 'topics' ? null : 'topics'
+                  )
+                "
               >
-                {{ link.label }}
-              </a>
+                <div class="flex items-center space-x-3">
+                  <i [class]="item.icon" class="text-blue-400"></i>
+                  <span class="font-medium">{{ item.label }}</span>
+                </div>
+                <i
+                  class="fas fa-chevron-down transition-transform duration-200"
+                  [class.rotate-180]="activeSubmenu() === 'topics'"
+                ></i>
+              </button>
+
+              @if (activeSubmenu() === 'topics') {
+              <div
+                class="mobile-submenu mt-2 ml-4 space-y-3 border-l-2 border-blue-500/30 pl-4"
+              >
+                @for (category of topicsCategories(); track category.title) {
+                <div class="mobile-category">
+                  <h4
+                    class="text-sm font-semibold text-gray-400 mb-2 flex items-center space-x-2"
+                  >
+                    <i [class]="category.icon" class="text-xs"></i>
+                    <span>{{ category.title }}</span>
+                  </h4>
+                  <div class="space-y-1">
+                    @for (topic of category.topics.slice(0, 3); track
+                    topic.path) {
+                    <a
+                      [routerLink]="topic.path"
+                      class="block p-2 rounded text-sm text-gray-300 hover:text-white hover:bg-white/10 transition-colors duration-200"
+                      (click)="closeAllMenus()"
+                    >
+                      {{ topic.label }}
+                    </a>
+                    }
+                  </div>
+                </div>
+                }
+              </div>
               }
             </div>
-            }
+            } @else {
+            <!-- Regular Mobile Link -->
+            <a
+              [routerLink]="item.path"
+              routerLinkActive="active"
+              [routerLinkActiveOptions]="{ exact: item.path === '/' }"
+              class="mobile-nav-link flex items-center space-x-3 p-3 rounded-lg text-gray-300 hover:text-white hover:bg-white/10 transition-all duration-200"
+              (click)="closeAllMenus()"
+            >
+              <i [class]="item.icon" class="text-blue-400"></i>
+              <span class="font-medium">{{ item.label }}</span>
+            </a>
+            } }
           </div>
-          } } @else {
-          <!-- Regular Link -->
-          <a
-            [routerLink]="item.path"
-            routerLinkActive="active"
-            class="mobile-nav-link block text-xl"
-            (click)="closeMenu()"
-          >
-            {{ item.label }}
-          </a>
-          }
-        </li>
-        }
-      </ul>
+        </div>
 
-      <div class="mobile-auth mt-10 space-y-4">
-        <button
-          class="btn mobile-btn btn-login w-full py-3 bg-transparent border border-white text-white rounded mobile-btn"
-          routerLink="/login"
-          (click)="closeMenu()"
-        >
-          Login
-        </button>
-        <button
-          class="btn btn-signup mobile-btn w-full py-3 bg-yellow-500 text-gray-900 font-semibold rounded mobile-btn"
-          routerLink="/signup"
-          (click)="closeMenu()"
-        >
-          Sign Up
-        </button>
+        <!-- Mobile Auth -->
+        <div class="mobile-auth p-6 border-t border-white/10">
+          @if (!authService.isLoggedIn()) {
+          <div class="space-y-3">
+            <button
+              routerLink="/login"
+              class="w-full py-3 text-gray-300 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200 font-medium border border-white/20"
+              (click)="closeAllMenus()"
+            >
+              Sign In
+            </button>
+            <button
+              routerLink="/register"
+              class="w-full py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold rounded-lg shadow-lg transition-all duration-200"
+              (click)="closeAllMenus()"
+            >
+              Get Started Free
+            </button>
+          </div>
+          } @else {
+          <div class="space-y-3">
+            <div class="flex items-center space-x-3 p-3 rounded-lg bg-white/10">
+              <div
+                class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold"
+              >
+                {{ currentUser?.name?.charAt(0) || "U" }}
+              </div>
+              <span class="text-white font-medium">{{
+                currentUser?.name || "User"
+              }}</span>
+            </div>
+            <button
+              class="w-full py-3 text-red-400 hover:bg-red-500/10 rounded-lg transition-all duration-200 font-medium"
+              (click)="logout()"
+            >
+              Sign Out
+            </button>
+          </div>
+          }
+        </div>
       </div>
     </div>
   </div>
+  }
 </nav>

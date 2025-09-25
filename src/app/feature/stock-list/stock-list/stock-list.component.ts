@@ -2,7 +2,8 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { StockService } from '../../../core/services/stock.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import type { Stock } from '../../../shared/layout/navbar/navbar.component';
+import { Stock } from '../../../core/models/stock';
+// import type { Stock } from '../../../shared/layout/navbar/navbar.component';
 
 @Component({
   selector: 'app-stock-list',

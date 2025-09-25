@@ -1,10 +1,19 @@
-import { Component, signal } from '@angular/core';
+import {
+  Component,
+  HostListener,
+  inject,
+  OnInit,
+  signal,
+  OnDestroy,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatGridListModule } from '@angular/material/grid-list';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { Subscription } from 'rxjs';
 import {
   trigger,
   state,
@@ -12,6 +21,14 @@ import {
   transition,
   animate,
 } from '@angular/animations';
+
+interface Topic {
+  title: string;
+  description: string;
+  route: string;
+  icon: string;
+  color: string;
+}
 
 @Component({
   selector: 'app-home',
@@ -27,15 +44,21 @@ import {
   styleUrl: './home.component.scss',
   animations: [
     trigger('cardHover', [
-      state('default', style({ transform: 'scale(.9)' })),
-      state('hovered', style({ transform: 'scale(1.03)' })),
-      transition('default <=> hovered', animate('150ms ease-in-out')),
+      state('default', style({ transform: 'scale(0.98)' })),
+      state('hovered', style({ transform: 'scale(1.02)' })),
+      transition('default <=> hovered', animate('200ms ease-in-out')),
     ]),
   ],
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit, OnDestroy {
+  private breakpointObserver = inject(BreakpointObserver);
+  private subscription = new Subscription();
+
   theme = signal<'light' | 'dark'>('light');
-  topics = signal([
+  gridCols = signal(3);
+  hoveredCard = signal<number | null>(null);
+
+  topics = signal<Topic[]>([
     {
       title: 'Signals & Reactivity',
       description: 'Explore fine-grained reactivity with Angular Signals.',
@@ -80,7 +103,45 @@ export class HomeComponent {
     },
   ]);
 
-  hoveredCard = signal<number | null>(null);
+  ngOnInit() {
+    this.setupBreakpointObserver();
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
+  }
+
+  private setupBreakpointObserver() {
+    const breakpointSubscription = this.breakpointObserver
+      .observe([
+        '(max-width: 599.98px)', // Mobile
+        '(min-width: 600px) and (max-width: 959.98px)', // Tablet
+        '(min-width: 960px)', // Desktop
+      ])
+      .subscribe(() => {
+        if (this.breakpointObserver.isMatched('(max-width: 599.98px)')) {
+          this.gridCols.set(1);
+        } else if (
+          this.breakpointObserver.isMatched(
+            '(min-width: 600px) and (max-width: 959.98px)'
+          )
+        ) {
+          this.gridCols.set(2);
+        } else {
+          this.gridCols.set(3);
+        }
+      });
+
+    this.subscription.add(breakpointSubscription);
+  }
+
+  // Optional: Handle window resize for additional responsiveness
+  // @HostListener('window:resize', ['$event'])
+  // onResize(event: Event) {
+  //   // This will automatically trigger the breakpoint observer
+  //   // You can add additional resize logic here if needed
+  // }
+
   toggleTheme() {
     this.theme.update((t) => (t === 'light' ? 'dark' : 'light'));
     document.body.classList.toggle('dark-theme', this.theme() === 'dark');
@@ -94,7 +155,7 @@ export class HomeComponent {
     this.hoveredCard.set(null);
   }
 
-  trackByTopic(index: number, topic: any): string {
+  trackByTopic(index: number, topic: Topic): string {
     return topic.title; // Optimized *ngFor tracking
   }
 }

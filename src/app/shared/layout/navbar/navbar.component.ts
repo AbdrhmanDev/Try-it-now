@@ -1,197 +1,327 @@
-import { AuthService } from './../../../core/services/auth.service';
+import {
+  Component,
+  computed,
+  signal,
+  OnInit,
+  OnDestroy,
+  HostListener,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Component, computed, signal, OnInit, OnDestroy } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
-
-export interface Stock {
-  symbol: string;
-  name: string;
-  price: number;
-  change: number;
-  previousPrice?: number;
-}
+import { RouterLink, RouterLinkActive, Router } from '@angular/router';
+import { AuthService } from './../../../core/services/auth.service';
+import { FormsModule } from '@angular/forms';
 
 interface NavItem {
   label: string;
   path: string;
+  icon: string;
+  description?: string;
   isMegaMenu?: boolean;
+}
+
+interface TopicCategory {
+  title: string;
+  icon: string;
+  color: string;
+  topics: TopicLink[];
+}
+
+interface TopicLink {
+  label: string;
+  path: string;
+  description: string;
+  difficulty: 'Beginner' | 'Intermediate' | 'Advanced';
+  isNew?: boolean;
+  isPopular?: boolean;
 }
 
 @Component({
   selector: 'app-navbar',
+  standalone: true,
+  imports: [CommonModule, RouterLink, RouterLinkActive, FormsModule],
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.scss'],
-  imports: [RouterLink, RouterLinkActive, CommonModule], // Standalone: add imports
-  standalone: true, // Required for standalone component
 })
 export class NavbarComponent implements OnInit, OnDestroy {
-  constructor(public AuthService: AuthService) {}
+  constructor(public authService: AuthService, private router: Router) {}
+
   // Reactive state
-  private stocksSignal = signal<Stock[]>([
-    { symbol: 'AAPL', name: 'Apple Inc.', price: 175.43, change: 2.15 },
-    { symbol: 'GOOGL', name: 'Alphabet Inc.', price: 2847.52, change: -15.23 },
-    { symbol: 'MSFT', name: 'Microsoft Corp.', price: 378.85, change: 5.67 },
-    { symbol: 'TSLA', name: 'Tesla Inc.', price: 248.42, change: -8.91 },
-    { symbol: 'AMZN', name: 'Amazon.com Inc.', price: 3127.78, change: 12.45 },
-    { symbol: 'META', name: 'Meta Platforms', price: 331.26, change: 4.82 },
-    { symbol: 'NVDA', name: 'NVIDIA Corp.', price: 875.28, change: 18.73 },
-    { symbol: 'NFLX', name: 'Netflix Inc.', price: 445.87, change: -3.21 },
-  ]);
-  isMobile = signal<boolean>(window.innerWidth < 768);
-  private favoritesSignal = signal<string[]>(['AAPL', 'TSLA']);
-
-  stocks = computed(() => this.stocksSignal());
-  favorites = computed(() => this.favoritesSignal());
-
-  // Navbar state
+  get currentUser() {
+    return this.authService.currentUser();
+  }
   isScrolled = signal(false);
   isMenuOpen = signal(false);
+  isMegaMenuOpen = signal(false);
+  activeSubmenu = signal<string | null>(null);
+  isMobile = signal(false);
+  searchQuery = signal('');
+  isSearchFocused = signal(false);
 
   // Navigation items
   navItems = signal<NavItem[]>([
-    { label: 'Home', path: '/', isMegaMenu: false },
-    { label: 'Stock', path: '/stock' },
-    { label: 'About', path: '/about' },
     {
-      label: 'Services',
-      path: '',
-      isMegaMenu: true, // ← This will trigger the mega dropdown
+      label: 'Home',
+      path: '/',
+      icon: 'fas fa-home',
+      description: 'Welcome to Angular Topics',
     },
-    { label: 'Test', path: '/test' },
-    { label: 'Contact', path: '/contact' },
-    { label: 'Change Detection', path: '/change-detection' },
+    {
+      label: 'Topics',
+      path: '',
+      icon: 'fas fa-layer-group',
+      isMegaMenu: true,
+      description: 'Explore Angular concepts',
+    },
+    {
+      label: 'Tutorials',
+      path: '/tutorials',
+      icon: 'fas fa-graduation-cap',
+      description: 'Step-by-step guides',
+    },
+    {
+      label: 'Examples',
+      path: '/examples',
+      icon: 'fas fa-code',
+      description: 'Live code demos',
+    },
+    {
+      label: 'Blog',
+      path: '/blog',
+      icon: 'fas fa-blog',
+      description: 'Latest insights',
+    },
+    {
+      label: 'Community',
+      path: '/community',
+      icon: 'fas fa-users',
+      description: 'Join discussions',
+    },
   ]);
 
-  megaMenuContent = [
+  // Topics mega menu content
+  topicsCategories = signal<TopicCategory[]>([
     {
       title: 'Fundamentals',
-      links: [
-        { label: 'Getting Started', path: '/angular/getting-started' },
-        { label: 'Components & Templates', path: '/angular/components' },
-        { label: 'Directives & Pipes', path: '/angular/directives-pipes' },
+      icon: 'fas fa-foundation',
+      color: 'from-blue-500 to-cyan-500',
+      topics: [
         {
-          label: 'Dependency Injection',
-          path: '/angular/dependency-injection',
+          label: 'Components & Templates',
+          path: '/topics/components',
+          description: 'Building blocks of Angular apps',
+          difficulty: 'Beginner',
+          isPopular: true,
+        },
+        {
+          label: 'Directives & Pipes',
+          path: '/topics/directives',
+          description: 'Enhance HTML with custom functionality',
+          difficulty: 'Beginner',
+        },
+        {
+          label: 'Services & DI',
+          path: '/topics/services',
+          description: 'Share data and logic across components',
+          difficulty: 'Intermediate',
+        },
+        {
+          label: 'Routing & Navigation',
+          path: '/topics/routing',
+          description: 'Navigate between views',
+          difficulty: 'Intermediate',
         },
       ],
     },
     {
-      title: 'Advanced Topics',
-      links: [
-        { label: 'Change Detection', path: '/angular/change-detection' },
-        { label: 'Standalone Components', path: '/angular/standalone' },
-        { label: 'Signals & Reactivity', path: '/angular/signals' },
-        { label: 'RxJS & Observables', path: '/angular/rxjs' },
-        { label: 'Forms (Reactive & Template-driven)', path: '/angular/forms' },
+      title: 'State Management',
+      icon: 'fas fa-database',
+      color: 'from-purple-500 to-pink-500',
+      topics: [
+        {
+          label: 'Signals & Reactivity',
+          path: '/topics/signals',
+          description: 'Modern reactive programming',
+          difficulty: 'Intermediate',
+          isNew: true,
+        },
+        {
+          label: 'RxJS & Observables',
+          path: '/topics/rxjs',
+          description: 'Reactive extensions for JavaScript',
+          difficulty: 'Advanced',
+        },
+        {
+          label: 'NgRx Store',
+          path: '/topics/ngrx',
+          description: 'Redux pattern for Angular',
+          difficulty: 'Advanced',
+        },
+        {
+          label: 'State Patterns',
+          path: '/topics/state-patterns',
+          description: 'Best practices for state management',
+          difficulty: 'Advanced',
+        },
       ],
     },
     {
-      title: 'Architecture & State Management',
-      links: [
-        { label: 'Routing & Lazy Loading', path: '/angular/routing' },
-        { label: 'NgRx / Signals Store', path: '/angular/state-management' },
-        { label: 'Services & Providers', path: '/angular/services' },
-        { label: 'Clean Architecture', path: '/angular/architecture' },
+      title: 'Performance',
+      icon: 'fas fa-rocket',
+      color: 'from-green-500 to-emerald-500',
+      topics: [
+        {
+          label: 'Change Detection',
+          path: '/topics/change-detection',
+          description: 'Optimize component updates',
+          difficulty: 'Advanced',
+          isPopular: true,
+        },
+        {
+          label: 'Lazy Loading',
+          path: '/topics/lazy-loading',
+          description: 'Load modules on demand',
+          difficulty: 'Intermediate',
+        },
+        {
+          label: 'OnPush Strategy',
+          path: '/topics/onpush',
+          description: 'Improve performance with OnPush',
+          difficulty: 'Advanced',
+        },
+        {
+          label: 'Bundle Optimization',
+          path: '/topics/optimization',
+          description: 'Reduce bundle size and improve loading',
+          difficulty: 'Advanced',
+        },
       ],
     },
     {
-      title: 'Performance & Tools',
-      links: [
-        { label: 'OnPush Strategy', path: '/angular/onpush' },
-        { label: 'Standalone API', path: '/angular/standalone-api' },
-        { label: 'Angular CLI & Schematics', path: '/angular/cli' },
-        { label: 'Testing (Jest/Karma)', path: '/angular/testing' },
+      title: 'Modern Angular',
+      icon: 'fas fa-sparkles',
+      color: 'from-orange-500 to-red-500',
+      topics: [
+        {
+          label: 'Standalone Components',
+          path: '/topics/standalone',
+          description: 'Module-free Angular development',
+          difficulty: 'Intermediate',
+          isNew: true,
+        },
+        {
+          label: 'Angular Elements',
+          path: '/topics/elements',
+          description: 'Create custom elements',
+          difficulty: 'Advanced',
+        },
+        {
+          label: 'Dynamic Components',
+          path: '/topics/dynamic',
+          description: 'Create components at runtime',
+          difficulty: 'Advanced',
+        },
+        {
+          label: 'Micro Frontends',
+          path: '/topics/micro-frontends',
+          description: 'Scalable frontend architecture',
+          difficulty: 'Advanced',
+          isNew: true,
+        },
       ],
     },
-  ];
+  ]);
 
-  private updateSubscription: any;
-  isMegaMenuOpen = signal(false);
-  isMobileMegaOpen = signal(false);
-  private closeTimeout: any;
+  // Quick actions for authenticated users
+  quickActions = computed(() => [
+    { label: 'My Progress', icon: 'fas fa-chart-line', path: '/progress' },
+    { label: 'Bookmarks', icon: 'fas fa-bookmark', path: '/bookmarks' },
+    { label: 'Settings', icon: 'fas fa-cog', path: '/settings' },
+  ]);
+
+  @HostListener('window:scroll', ['$event'])
+  onScroll() {
+    this.isScrolled.set(window.scrollY > 20);
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize() {
+    this.isMobile.set(window.innerWidth < 768);
+    if (!this.isMobile() && this.isMenuOpen()) {
+      this.closeAllMenus();
+    }
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: Event) {
+    const target = event.target as HTMLElement;
+    if (!target.closest('.navbar')) {
+      this.closeAllMenus();
+    }
+  }
+
   ngOnInit() {
-    // Simulate scroll
-    window.addEventListener('scroll', () => {
-      this.isScrolled.set(window.scrollY > 50);
-    });
-    window.addEventListener('resize', () => {
-      this.isMobile.set(window.innerWidth < 768);
-    });
-
-    // Your existing scroll listener...
-    window.addEventListener('scroll', () => {
-      this.isScrolled.set(window.scrollY > 50);
-    });
-    // Auto-update stock prices
-    this.updateSubscription = setInterval(() => {
-      this.updatePrices();
-    }, 3000);
+    this.isMobile.set(window.innerWidth < 768);
   }
 
-  toggleMegaMenu(open: boolean) {
-    this.isMegaMenuOpen.set(open);
-    console.log(this.isMegaMenuOpen);
-  }
-
-  toggleMobileMega() {
-    if (this.isMobile()) {
-      this.isMobileMegaOpen.update((v) => !v);
-    }
-  }
-  toggleMenu() {
-    this.isMenuOpen.update((value) => !value);
-    console.log('isMenuOpen:', this.isMenuOpen()); // Debug
-  }
   ngOnDestroy() {
-    if (this.updateSubscription) {
-      clearInterval(this.updateSubscription);
-    }
-    window.removeEventListener('scroll', () => {});
-  }
-  openMegaMenu() {
-    if (this.closeTimeout) {
-      clearTimeout(this.closeTimeout);
-    }
-    this.isMegaMenuOpen.set(true);
-  }
-  // Menu controls
-  // toggleMenu() {
-  //   this.isMenuOpen.update((value) => !value);
-  // }
-
-  isActive(path: string): boolean {
-    return window.location.pathname === path;
+    // Cleanup if needed
   }
 
-  // Favorites
-  toggleFavorite(symbol: string) {
-    const current = this.favoritesSignal();
-    if (current.includes(symbol)) {
-      this.favoritesSignal.set(current.filter((fav) => fav !== symbol));
+  toggleMenu() {
+    this.isMenuOpen.update((current) => !current);
+    if (this.isMenuOpen()) {
+      document.body.style.overflow = 'hidden';
     } else {
-      this.favoritesSignal.set([...current, symbol]);
+      document.body.style.overflow = '';
     }
   }
 
-  private updatePrices() {
-    const updated = this.stocksSignal().map((stock) => {
-      const changePercent = (Math.random() - 0.5) * 0.05; // ±2.5%
-      const newPrice = parseFloat(
-        (stock.price * (1 + changePercent)).toFixed(2)
-      );
-      const change = newPrice - stock.price;
-      return { ...stock, price: newPrice, change };
-    });
-    this.stocksSignal.set(updated);
+  toggleMegaMenu() {
+    this.isMegaMenuOpen.update((current) => !current);
   }
-  closeMenu() {
+
+  setActiveSubmenu(category: string | null) {
+    this.activeSubmenu.set(category);
+  }
+
+  closeAllMenus() {
     this.isMenuOpen.set(false);
     this.isMegaMenuOpen.set(false);
+    this.activeSubmenu.set(null);
+    this.isSearchFocused.set(false);
+    document.body.style.overflow = '';
   }
 
-  closeMegaMenu() {
-    this.closeTimeout = setTimeout(() => {
-      this.isMegaMenuOpen.set(false);
-    }, 200); // 200ms delay
+  onSearchFocus() {
+    this.isSearchFocused.set(true);
+  }
+
+  onSearchBlur() {
+    setTimeout(() => {
+      this.isSearchFocused.set(false);
+    }, 200);
+  }
+
+  navigateToTopic(path: string) {
+    this.router.navigate([path]);
+    this.closeAllMenus();
+  }
+
+  getDifficultyColor(difficulty: string): string {
+    switch (difficulty) {
+      case 'Beginner':
+        return 'text-green-500';
+      case 'Intermediate':
+        return 'text-yellow-500';
+      case 'Advanced':
+        return 'text-red-500';
+      default:
+        return 'text-gray-500';
+    }
+  }
+
+  logout() {
+    this.authService.logout();
+    this.closeAllMenus();
   }
 }
