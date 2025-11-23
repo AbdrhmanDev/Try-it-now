@@ -1,0 +1,203 @@
+<div class="topic-detail-container" [class.dark-theme]="getTheme() === 'dark'">
+  <!-- Loading State -->
+  <div *ngIf="loading()" class="loading-container">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>Loading topic...</p>
+  </div>
+
+  <!-- Topic Content -->
+  <div *ngIf="!loading() && topic()" class="topic-content">
+    <!-- Header -->
+    <header class="topic-header">
+      <button mat-button routerLink="/" class="back-button">
+        <mat-icon>arrow_back</mat-icon>
+        Back to Topics
+      </button>
+
+      <div class="topic-meta">
+        <div class="topic-badge" [class]="topic()?.level || 'beginner'">
+          {{ topic()?.level }}
+        </div>
+        <span class="estimated-time">
+          <mat-icon>schedule</mat-icon>
+          {{ topic()?.estimatedTime }}
+        </span>
+      </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="topic-hero">
+      <div class="hero-icon" [style.background]="topic()?.color">
+        <mat-icon>{{ topic()?.icon }}</mat-icon>
+      </div>
+      <div class="hero-content">
+        <h1>{{ topic()?.title }}</h1>
+        <p class="hero-description">{{ topic()?.description }}</p>
+        <div class="hero-actions">
+          <button mat-raised-button color="primary" (click)="activeTab.set(1)">
+            <mat-icon>code</mat-icon>
+            Start Learning
+          </button>
+          <button mat-stroked-button (click)="activeTab.set(3)">
+            <mat-icon>bookmark</mat-icon>
+            Resources
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Content Tabs -->
+    <mat-tab-group
+      [selectedIndex]="activeTab()"
+      (selectedIndexChange)="onTabChange($event)"
+    >
+      <!-- Overview Tab -->
+      <mat-tab label="Overview">
+        <div class="tab-content">
+          <div class="overview-grid">
+            <mat-card class="overview-card">
+              <mat-card-header>
+                <mat-icon mat-card-avatar>info</mat-icon>
+                <mat-card-title>Description</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <p>{{ topic()?.longDescription }}</p>
+              </mat-card-content>
+            </mat-card>
+
+            <mat-card
+              class="overview-card"
+              *ngIf="topic()?.prerequisites?.length"
+            >
+              <mat-card-header>
+                <mat-icon mat-card-avatar>school</mat-icon>
+                <mat-card-title>Prerequisites</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <ul>
+                  <li *ngFor="let prereq of topic()?.prerequisites">
+                    {{ prereq }}
+                  </li>
+                </ul>
+              </mat-card-content>
+            </mat-card>
+
+            <mat-card class="overview-card">
+              <mat-card-header>
+                <mat-icon mat-card-avatar>flag</mat-icon>
+                <mat-card-title>Learning Objectives</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <ul>
+                  <li *ngFor="let objective of topic()?.learningObjectives">
+                    {{ objective }}
+                  </li>
+                </ul>
+              </mat-card-content>
+            </mat-card>
+          </div>
+        </div>
+      </mat-tab>
+
+      <!-- Code Examples Tab -->
+      <mat-tab label="Code Examples">
+        <div class="tab-content">
+          <div class="code-examples">
+            <div
+              *ngFor="let example of topic()?.codeExamples; let i = index"
+              class="code-example"
+            >
+              <h3>{{ example.title }}</h3>
+              <p>{{ example.description }}</p>
+              <div class="code-block">
+                <pre><code [class]="'language-' + example.language">{{ example.code }}</code></pre>
+              </div>
+            </div>
+          </div>
+        </div>
+      </mat-tab>
+
+      <!-- Practice Tab -->
+      <mat-tab label="Practice">
+        <div class="tab-content">
+          <div class="practice-section">
+            <h2>Interactive Exercise</h2>
+            <p>Try implementing what you've learned:</p>
+
+            <mat-card class="exercise-card">
+              <mat-card-content>
+                <h3>Challenge: Create a Counter with Signals</h3>
+                <p>
+                  Build a counter component that uses signals for state
+                  management.
+                </p>
+
+                <div class="exercise-requirements">
+                  <h4>Requirements:</h4>
+                  <ul>
+                    <li>Use signals for the count state</li>
+                    <li>Add increment/decrement buttons</li>
+                    <li>Display the current count</li>
+                    <li>Add a reset functionality</li>
+                  </ul>
+                </div>
+
+                <div class="exercise-actions">
+                  <button mat-raised-button color="primary">
+                    <mat-icon>play_arrow</mat-icon>
+                    Start Exercise
+                  </button>
+                  <button mat-stroked-button>
+                    <mat-icon>visibility</mat-icon>
+                    View Solution
+                  </button>
+                </div>
+              </mat-card-content>
+            </mat-card>
+          </div>
+        </div>
+      </mat-tab>
+
+      <!-- Resources Tab -->
+      <mat-tab label="Resources">
+        <div class="tab-content">
+          <div class="resources-grid">
+            <mat-card
+              *ngFor="let resource of topic()?.resources"
+              class="resource-card"
+            >
+              <mat-card-header>
+                <mat-icon mat-card-avatar>{{
+                  getResourceIcon(resource.type)
+                }}</mat-icon>
+                <mat-card-title>{{ resource.title }}</mat-card-title>
+                <mat-card-subtitle>{{ resource.type }}</mat-card-subtitle>
+              </mat-card-header>
+              <mat-card-actions>
+                <a
+                  mat-button
+                  [href]="resource.url"
+                  target="_blank"
+                  color="primary"
+                >
+                  <mat-icon>open_in_new</mat-icon>
+                  Open
+                </a>
+              </mat-card-actions>
+            </mat-card>
+          </div>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+
+  <!-- Not Found State -->
+  <div *ngIf="!loading() && !topic()" class="not-found">
+    <mat-icon>search_off</mat-icon>
+    <h2>Topic Not Found</h2>
+    <p>The topic you're looking for doesn't exist.</p>
+    <button mat-raised-button routerLink="/" color="primary">
+      Back to Home
+    </button>
+  </div>
+</div>

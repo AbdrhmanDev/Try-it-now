@@ -8,10 +8,17 @@ import {
   Topic,
   TopicsListComponent,
 } from '../topics-list/topics-list.component';
+import { HighlightsComponent } from '../highlights/highlights.component';
 
 @Component({
   selector: 'app-home',
-  imports: [CommonModule, MatButtonModule, MatIconModule, TopicsListComponent],
+  imports: [
+    CommonModule,
+    MatButtonModule,
+    MatIconModule,
+    TopicsListComponent,
+    HighlightsComponent,
+  ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
 })

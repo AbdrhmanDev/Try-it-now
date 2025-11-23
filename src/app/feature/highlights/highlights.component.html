@@ -1,0 +1,11 @@
+<section class="highlights-section">
+  <div class="highlights-container">
+    <div *ngFor="let highlight of highlights" class="highlight-card">
+      <div class="highlight-icon">
+        <mat-icon>{{ highlight.icon }}</mat-icon>
+      </div>
+      <h3 class="highlight-title">{{ highlight.title }}</h3>
+      <p class="highlight-description">{{ highlight.description }}</p>
+    </div>
+  </div>
+</section>

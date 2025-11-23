@@ -6,6 +6,8 @@
     [@cardHover]="hoveredCard === i ? 'hovered' : 'default'"
     (mouseenter)="setHover(i)"
     (mouseleave)="clearHover()"
+    [routerLink]="['/topic', topic.route.substring(1)]"
+    style="cursor: pointer"
   >
     <!-- Card Header -->
     <div class="card-header">
@@ -30,8 +32,9 @@
       <button
         mat-stroked-button
         [color]="getButtonColor(topic.level || 'default')"
-        [routerLink]="topic.route"
+        [routerLink]="['/topic', topic.route.substring(1)]"
         class="explore-btn"
+        (click)="$event.stopPropagation()"
       >
         Explore
         <mat-icon>arrow_forward</mat-icon>

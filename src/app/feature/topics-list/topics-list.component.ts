@@ -69,7 +69,10 @@ export class TopicsListComponent {
   trackByTopic(index: number, topic: Topic): string {
     return topic.title;
   }
-
+  getTopicId(route: string): string {
+    // Remove leading slash from route to get the ID
+    return route.replace(/^\//, '');
+  }
   getButtonColor(level: string): string {
     switch (level) {
       case 'beginner':
