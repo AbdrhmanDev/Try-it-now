@@ -1,0 +1,48 @@
+<div class="topics-grid">
+  <mat-card
+    *ngFor="let topic of topics(); let i = index; trackBy: trackByTopic"
+    class="topic-card"
+    [class]="'level-' + topic.level"
+    [@cardHover]="hoveredCard === i ? 'hovered' : 'default'"
+    (mouseenter)="setHover(i)"
+    (mouseleave)="clearHover()"
+  >
+    <!-- Card Header -->
+    <div class="card-header">
+      <div class="topic-meta">
+        <span class="level-badge" [class]="topic.level">
+          {{ topic.level }}
+        </span>
+        <mat-icon class="topic-icon" [style.color]="topic.color">
+          {{ topic.icon }}
+        </mat-icon>
+      </div>
+      <h3 class="topic-title">{{ topic.title }}</h3>
+    </div>
+
+    <!-- Card Content -->
+    <div class="card-content">
+      <p class="topic-description">{{ topic.description }}</p>
+    </div>
+
+    <!-- Card Actions -->
+    <div class="card-actions">
+      <button
+        mat-stroked-button
+        [color]="getButtonColor(topic.level || 'default')"
+        [routerLink]="topic.route"
+        class="explore-btn"
+      >
+        Explore
+        <mat-icon>arrow_forward</mat-icon>
+      </button>
+    </div>
+  </mat-card>
+</div>
+
+<!-- Empty State -->
+<div *ngIf="topics().length === 0" class="empty-state">
+  <mat-icon>search_off</mat-icon>
+  <h3>No topics found</h3>
+  <p>Try selecting a different level filter</p>
+</div>

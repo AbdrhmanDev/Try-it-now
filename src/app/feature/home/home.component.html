@@ -2,58 +2,128 @@
   <!-- Header -->
   <header class="app-header">
     <h1>🚀 Angular Advanced Playground</h1>
-    <button mat-icon-button (click)="toggleTheme()" aria-label="Toggle theme">
-      <mat-icon>{{
-        theme() === "light" ? "dark_mode" : "light_mode"
-      }}</mat-icon>
-    </button>
+    <div class="header-actions">
+      <button
+        mat-raised-button
+        (click)="filterTopics('all')"
+        class="filter-btn"
+        [class.active]="currentFilter() === 'all'"
+      >
+        All Topics
+      </button>
+      <button
+        mat-button
+        (click)="filterTopics('beginner')"
+        class="filter-btn"
+        [class.active]="currentFilter() === 'beginner'"
+      >
+        Beginner
+      </button>
+      <button
+        mat-button
+        (click)="filterTopics('intermediate')"
+        class="filter-btn"
+        [class.active]="currentFilter() === 'intermediate'"
+      >
+        Intermediate
+      </button>
+      <button
+        mat-button
+        (click)="filterTopics('advanced')"
+        class="filter-btn"
+        [class.active]="currentFilter() === 'advanced'"
+      >
+        Advanced
+      </button>
+      <button mat-icon-button (click)="toggleTheme()" aria-label="Toggle theme">
+        <mat-icon>{{
+          theme() === "light" ? "dark_mode" : "light_mode"
+        }}</mat-icon>
+      </button>
+    </div>
   </header>
 
   <!-- Hero Section -->
   <section class="hero">
-    <h2>Master Angular’s Advanced Concepts</h2>
+    <h2>Master Angular's Advanced Concepts</h2>
     <p>
       Each card below unlocks a deep-dive into modern Angular patterns and APIs.
+      <span class="learning-path"
+        >Start with beginner topics and progress to advanced concepts.</span
+      >
     </p>
   </section>
 
-  <!-- Topics Grid -->
-  <mat-grid-list
-    [cols]="gridCols()"
-    rowHeight="200px"
-    gutterSize="16px"
-    class="topics-grid"
-  >
-    <mat-grid-tile
-      *ngFor="let topic of topics(); let i = index; trackBy: trackByTopic"
-    >
-      <mat-card
-        [@cardHover]="hoveredCard() === i ? 'hovered' : 'default'"
-        (mouseenter)="setHover(i)"
-        (mouseleave)="clearHover()"
-        class="topic-card"
-        [style.border-top-color]="topic.color"
-      >
-        <mat-card-header>
-          <mat-icon
-            mat-card-avatar
-            class="topic-icon"
-            [style.color]="topic.color"
-            >{{ topic.icon }}</mat-icon
-          >
-          <mat-card-title>{{ topic.title }}</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-          <p>{{ topic.description }}</p>
-        </mat-card-content>
-        <mat-card-actions align="end">
-          <button mat-button color="primary" [routerLink]="topic.route">
-            Explore <mat-icon>arrow_forward</mat-icon>
-          </button>
-        </mat-card-actions>
-      </mat-card>
-    </mat-grid-tile>
-  </mat-grid-list>
+  <!-- Stats Section -->
+  <section class="stats-section">
+    <div class="stats-container">
+      <div class="stat-card" *ngFor="let stat of stats()">
+        <div class="stat-icon" [style.background]="stat.color">
+          <mat-icon>{{ stat.icon }}</mat-icon>
+        </div>
+        <div class="stat-content">
+          <h3>{{ stat.value }}</h3>
+          <p>{{ stat.label }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Learning Path Section -->
+  <section class="learning-path-section">
+    <div class="path-container">
+      <h2>Your Learning Journey</h2>
+      <div class="path-steps">
+        <div class="path-step" [class.active]="currentFilter() === 'beginner'">
+          <div class="step-number">1</div>
+          <div class="step-content">
+            <h3>Beginner</h3>
+            <p>Master the fundamentals and build strong foundations</p>
+            <span class="step-count"
+              >{{ getTopicCount("beginner") }} topics</span
+            >
+          </div>
+        </div>
+
+        <div
+          class="path-step"
+          [class.active]="currentFilter() === 'intermediate'"
+        >
+          <div class="step-number">2</div>
+          <div class="step-content">
+            <h3>Intermediate</h3>
+            <p>Dive into modern features and advanced patterns</p>
+            <span class="step-count"
+              >{{ getTopicCount("intermediate") }} topics</span
+            >
+          </div>
+        </div>
+
+        <div class="path-step" [class.active]="currentFilter() === 'advanced'">
+          <div class="step-number">3</div>
+          <div class="step-content">
+            <h3>Advanced</h3>
+            <p>Explore cutting-edge techniques and optimizations</p>
+            <span class="step-count"
+              >{{ getTopicCount("advanced") }} topics</span
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Topics List Component -->
+  <app-topics-list
+    [topics]="filteredTopics()"
+    [currentFilter]="currentFilter()"
+    [gridCols]="gridCols()"
+    [theme]="theme()"
+    (topicHovered)="onTopicHovered($event)"
+    (topicLeave)="onTopicLeave()"
+    (themeToggle)="onThemeToggle()"
+  ></app-topics-list>
+
   <!-- Footer -->
   <footer class="app-footer">
     <p>Built with 💙 and Angular 19</p>
