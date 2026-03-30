@@ -44,7 +44,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     {
       title: 'Data Binding',
       description: 'Master interpolation, property binding, and event binding.',
-      route: '/data-binding',
+      route: '/dataBinding',
       icon: 'link',
       color: '#8BC34A',
       level: 'beginner',
@@ -53,7 +53,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       title: 'Directives Overview',
       description:
         'Understand built-in directives like *ngIf, *ngFor, and [ngClass].',
-      route: '/directives-basic',
+      route: '/directives',
       icon: 'tune',
       color: '#CDDC39',
       level: 'beginner',

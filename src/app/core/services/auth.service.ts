@@ -24,7 +24,7 @@ export class AuthService {
   currentUser = signal<User | null>(this.getStoredUser());
 
   login(username: string, password: string) {
-    if (username === 'admin' && password === '132') {
+    if (username === 'admin' && password === '1234') {
       localStorage.setItem(this.token, 'fake-token');
 
       // Create and store user data
