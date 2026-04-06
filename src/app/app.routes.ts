@@ -8,6 +8,7 @@ import { StockListComponent } from './feature/stock-list/stock-list/stock-list.c
 import { TopicDetailComponent } from './feature/topic-detail/topic-detail.component';
 import { TestComponent } from './shared/components/test/test.component';
 import { delayResolver } from './shared/resolvers/data.resolver';
+import { TestAreaComponent } from './Test/test-components/test-area/test-area.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent }, // Direct component, no redirect
@@ -48,6 +49,10 @@ export const routes: Routes = [
     path: 'login',
     component: LoginComponent,
     resolve: { loaded: delayResolver },
+  },
+  {
+    path: 'test-area',
+    component: TestAreaComponent,
   },
   { path: 'topic/:id', component: TopicDetailComponent },
   { path: '**', redirectTo: '' }, // Catch-all route

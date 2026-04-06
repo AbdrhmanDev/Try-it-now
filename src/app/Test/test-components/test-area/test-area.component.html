@@ -1,0 +1,33 @@
+<div class="area-container mt-10">
+  <div>
+    <h2>Test Area</h2>
+    <p>
+      This is a test area for experimenting with new features and components.
+    </p>
+  </div>
+  <div class="test-content">
+    <p>
+      Feel free to add any components or code snippets here for testing
+      purposes.
+    </p>
+    <!-- Add your test components or code snippets below -->
+    <div class="test-body">
+      <div>
+        <h3>add value</h3>
+        <input
+          (change)="printValue()"
+          [(ngModel)]="inputValue"
+          [value]="inputValue"
+          type="text"
+        />
+        <input
+          (change)="printValue()"
+          [(ngModel)]="textVal"
+          [value]="textVal"
+          type="text"
+        />
+      </div>
+      <app-props [value]="inputValue" [lable]="textVal"></app-props>
+    </div>
+  </div>
+</div>
